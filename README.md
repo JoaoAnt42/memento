@@ -8,11 +8,24 @@ Independent agents for test / implement / review. Red-commit SHA is the handoff 
 
 ## Install
 
+```
+/plugin marketplace add JoaoAnt42/memento
+/plugin install memento@memento
+```
+
+That's it — skills and the `/use_memento` command are now available.
+
+### Manual install (no plugin system)
+
 ```bash
-for d in memento-*/; do
-  mkdir -p ~/.claude/skills/"${d%/}"
-  cp "${d%/}.md" ~/.claude/skills/"${d%/}"/SKILL.md
+git clone https://github.com/JoaoAnt42/memento
+cd memento
+for d in skills/*/; do
+  name="$(basename "$d")"
+  mkdir -p ~/.claude/skills/"$name"
+  cp "$d/SKILL.md" ~/.claude/skills/"$name"/SKILL.md
 done
+cp commands/use_memento.md ~/.claude/commands/use_memento.md
 ```
 
 ## Use
@@ -37,8 +50,8 @@ Entry point is `memento-0-using`. Each step invokes the next skill in sequence.
 | 7 | `memento-7-implementing` | Independent impl agent, input = red SHA |
 | 7.5 | `memento-7b-human-smoke` | Optional; gated by `needs_human_smoke: true` |
 | 8 | `memento-8-final-review` | Parallel reviewers, precedence: Bugs > CRAP > Simplifier > DA > Tests |
-| 9 | `memento-9-receiving-review` | Verify, push back, or implement. Never performative. |
+| 9 | `memento-9-receiving-review` | Verify, push back, or implement. Loops back to step 8 on non-trivial review changes. |
 
 ## Requirements
 
-- Claude Code with skill support
+- Claude Code with plugin / skill support

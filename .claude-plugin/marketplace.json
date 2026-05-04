@@ -1,0 +1,31 @@
+{
+  "name": "memento",
+  "owner": {
+    "name": "João António",
+    "url": "https://github.com/JoaoAnt42"
+  },
+  "metadata": {
+    "description": "Memento way-of-work for Claude Code",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "memento",
+      "source": "./",
+      "description": "A Claude Code way-of-work cycle. Brainstorm → plan → auto-review → human-review → workbench → TDD-red → implement → smoke → final-review → receiving-review. Independent agents for test/impl/review.",
+      "version": "0.1.0",
+      "author": {
+        "name": "João António"
+      },
+      "category": "workflow",
+      "keywords": [
+        "way-of-work",
+        "tdd",
+        "code-review",
+        "planning",
+        "agents",
+        "workflow"
+      ]
+    }
+  ]
+}
