@@ -14,7 +14,9 @@ Write the plan to `~/Documents/be_JLA/work/plans/YYYY-MM-DD-<slug>.md`. Never in
 name: <slug>
 status: planning
 created: YYYY-MM-DD
+type: feat|fix|refactor|chore|docs|test|style|perf|ci|build   # required. Drives the branch prefix (`<type>/<slug>`) and the eventual conventional-commit / PR title.
 needs_human_smoke: true|false   # required, no default. true for user-visible behavior; false for pure internal work.
+worktree:                        # set by step 4 on approve. Absolute path to the per-plan git worktree. Empty during planning.
 ---
 
 # <Title>

@@ -7,9 +7,11 @@ description: Step 7 of Memento. Use after red tests are committed. Dispatches in
 
 One implementer subagent per task, **independent from the test-writer**. Input: the red commit SHA.
 
+Run from the plan's worktree (`worktree:` in plan frontmatter). `cd` there before dispatching subagents — they inherit cwd.
+
 ## Protocol
 
-1. For each task, dispatch an **implementer subagent** (`model: opus`) into the task's worktree. Brief:
+1. For each task, dispatch an **implementer subagent** (`model: opus`) on the feature branch. Brief:
    - Your job: make the tests green. Do not modify the tests.
    - The red commit is `<SHA>`. Start from there.
    - Surgical: touch only what the task requires. Match existing style.

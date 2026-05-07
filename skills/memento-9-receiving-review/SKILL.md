@@ -7,6 +7,15 @@ description: Step 9 of Memento. Use when receiving human code review feedback on
 
 Review feedback is a hypothesis, not an instruction. Verify before implementing.
 
+Run from the plan's worktree (`worktree:` in plan frontmatter). After the PR merges, remove the worktree:
+
+```sh
+git -C "$REPO" worktree remove "$WT"
+git -C "$REPO" branch -d "<type>/<plan-slug>" 2>/dev/null || true
+```
+
+`$REPO` = the main repo path, `$WT` = the `worktree:` value from the plan frontmatter. If `worktree remove` refuses (dirty / unmerged), stop and ask the user — don't `--force`.
+
 ## Rules
 
 - **Push back when feedback is wrong.** Bad assumption, misread code, worse alternative — say so with evidence before complying. If reviewer insists after hearing the case, proceed.

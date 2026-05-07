@@ -5,6 +5,8 @@ description: Step 8 of Memento. Use after implementation is green. Dispatches pa
 
 # Memento — Final Review
 
+Run from the plan's worktree (`worktree:` in plan frontmatter). `cd` there before dispatching reviewers; open the PR from there.
+
 Five reviewers in parallel. Orchestrator reconciles. Precedence when they conflict:
 
 **Bugs > CRAP > Simplifier > Devil's Advocate > Tests**
