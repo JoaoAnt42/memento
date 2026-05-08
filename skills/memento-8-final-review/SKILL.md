@@ -16,7 +16,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 1. For each task's green branch, dispatch **five reviewer subagents in parallel** (single message):
    - **Bugs** — correctness defects, security, data loss, race conditions
    - **CRAP** — Change Risk Anti-Patterns: high-complexity low-coverage functions
-   - **Simplifier** — cuts, merges, premature abstraction
+   - **Simplifier** — cuts, merges, premature abstraction, oversized new files
    - **Devil's Advocate** — assumption attacks, edge cases
    - **Tests** — coverage gaps, weak assertions, flaky patterns
 2. Each returns a list of findings with severity.
@@ -37,6 +37,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 - Precedence is strict. A Bugs finding beats a Simplifier finding, always.
 - **Replace, don't append** — same rule as step 3. If you rewrite a section, remove the old one.
 - PR is opened **here**, not earlier.
+- Simplifier flags **newly created** files >~300 LOC and proposes splits. It does **not** propose splitting pre-existing large files unless the diff makes them substantively worse.
 
 ## Transition
 
