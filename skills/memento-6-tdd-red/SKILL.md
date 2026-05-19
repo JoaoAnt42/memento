@@ -1,15 +1,17 @@
 ---
 name: memento-6-tdd-red
-description: Step 6 of Memento. Use after workbench is set up. Dispatches test-writer agents to produce 1 happy + 1 edge test per task, runs them red, and commits the red state as the handoff artifact for step 7.
+description: Step 6 of Memento. Use after the plan is approved and the feature branch is checked out. Dispatches test-writer agents to produce 1 happy + 1 edge test per task, runs them red, and commits the red state as the handoff artifact for step 7.
 ---
 
 # Memento — TDD Red
 
 Write tests, confirm red, commit the red SHA. That SHA is the contract handed to step 7.
 
+Each task is tagged `[repo: <label>]`. Run its test-writer and verifier in that repo's worktree — the `worktree:` of the matching `repos:` entry — so the red commit lands on that repo's branch. Different tasks may sit in different repos.
+
 ## Protocol
 
-1. For each task, dispatch a **test-writer subagent** into the task's worktree, **`model: sonnet`**. Brief: write **1 happy-path + 1 edge-case test** (not two happy paths). No implementation. Sonnet is enough — pattern work from a structured spec.
+1. For each task, dispatch a **test-writer subagent** (**`model: sonnet`**) on the feature branch. Brief: write **1 happy-path + 1 edge-case test** (not two happy paths). No implementation. Sonnet is enough — pattern work from a structured spec.
 2. When the test-writer returns, dispatch a **separate verifier subagent** (`model: haiku`) to run the tests and confirm they fail for the right reason (not syntax error, not missing import — actual assertion failure). Verifier is mechanical; Haiku is correct.
 3. On confirmed red, commit with `test: red for <task-slug>` and record the SHA in the plan file under that task.
 4. If tests pass immediately (false red), or fail for the wrong reason, the verifier returns that to the main agent — do NOT proceed. Loop: test-writer fixes, verifier re-checks.

@@ -5,7 +5,7 @@ description: Step 8 of Memento. Use after implementation is green. Dispatches pa
 
 # Memento — Final Review
 
-Run from the plan's worktree (`worktree:` in plan frontmatter). `cd` there before dispatching reviewers; open the PR from there.
+Each task is tagged `[repo: <label>]`; review it in that repo's worktree (the `worktree:` of the matching `repos:` entry). Open **one PR per repo** in `repos:` — each repo's `branch` → its `base`.
 
 Five reviewers in parallel. Orchestrator reconciles. Precedence when they conflict:
 
@@ -23,7 +23,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
 5. Present consolidated review to the user. For non-trivial changes, **pause for user confirmation before applying**.
-6. Once changes are applied and re-verified green, open the PR. Set `status: done`.
+6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: done`.
 7. Append a single short `## Final review changes` section to the plan listing **only**:
    - What was changed (one bullet per change, with the post-review SHA).
    - What was deferred + one-line reason (security/perf items pushed to a follow-up, etc.).

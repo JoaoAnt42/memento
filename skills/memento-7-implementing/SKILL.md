@@ -7,7 +7,7 @@ description: Step 7 of Memento. Use after red tests are committed. Dispatches in
 
 One implementer subagent per task, **independent from the test-writer**. Input: the red commit SHA.
 
-Run from the plan's worktree (`worktree:` in plan frontmatter). `cd` there before dispatching subagents — they inherit cwd.
+Each task is tagged `[repo: <label>]`. Before dispatching a task's subagents, `cd` into that repo's worktree — the `worktree:` of the matching `repos:` entry — so they inherit the right cwd. Different tasks may run in different repos.
 
 ## Protocol
 
