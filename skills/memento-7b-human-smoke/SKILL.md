@@ -19,7 +19,7 @@ If the flag is missing, halt and ask the user to set it in the plan.
 ## Protocol
 
 1. Read the plan. Extract `needs_human_smoke`. If `false`, skip to `memento-8-final-review`.
-2. Start services. Typical:
+2. Start services. In a multi-repo plan, start each repo's services from that repo's worktree (the matching `repos:` entry). Typical:
    - Dev server (e.g. `npm run dev`, `pnpm dev`, `uvicorn`, `dotnet run`)
    - Dependencies (docker compose up, db migrations, seed data)
    - Use `run_in_background: true` so you stay responsive.

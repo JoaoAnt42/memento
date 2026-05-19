@@ -1,8 +1,11 @@
 # Memento
 
-A Claude Code way-of-work cycle. Maximize confidence over speed.
+A Claude Code way-of-work cycle. Maximize confidence over speed — and match process weight to task size.
 
-**brainstorm → plan → auto-review → human-review → workbench → TDD-red → implement → smoke → final-review → receiving-review**
+Every task starts with a **prior-art sweep** (find any existing implementation before scoping), then is sized **Small** or **Large**:
+
+- **Small** → implement directly → final-review
+- **Large** → brainstorm → plan → auto-review → human-review → TDD-red → implement → smoke → final-review → receiving-review
 
 Independent agents for test / implement / review. Red-commit SHA is the handoff artifact.
 
@@ -40,12 +43,11 @@ Entry point is `memento-0-using`. Each step invokes the next skill in sequence.
 
 | Step | Skill | Purpose |
 |---|---|---|
-| 0 | `memento-0-using` | Entry point, cycle overview |
+| 0 | `memento-0-using` | Entry point. Prior-art sweep, then size Small/Large and route |
 | 1 | `memento-1-brainstorming` | Explore intent, self-research first |
 | 2 | `memento-2-planning` | Write plan in Obsidian, propose-4-options |
 | 3 | `memento-3-auto-review` | Devil's Advocate + Simplifier + Orchestrator |
-| 4 | `memento-4-human-review` | Submit plan; rejection loops back to step 2 |
-| 5 | `memento-5-workbench` | Git worktree per task |
+| 4 | `memento-4-human-review` | Submit plan; on approve, create a git worktree per repo; rejection loops back to step 2 |
 | 6 | `memento-6-tdd-red` | Write failing tests, commit red SHA |
 | 7 | `memento-7-implementing` | Independent impl agent, input = red SHA |
 | 7.5 | `memento-7b-human-smoke` | Optional; gated by `needs_human_smoke: true` |
