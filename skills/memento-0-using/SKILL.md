@@ -26,6 +26,8 @@ If a prior implementation is found, **it is the spec** — scope the task agains
 
 If the sweep finds nothing, say so explicitly — "no prior implementation found in `<places searched>`". A clean negative is a result; a skipped search is not.
 
+**Companion check (Large route):** the prior-art sweep asks *"does this already exist?"* It does not ask *"is the task's framing even right?"* That second question — wrong target, wrong owner, environment/topology assumed from partial reads — is the **Premise Auditor** in `memento-1-brainstorming`, dispatched in the same parallel batch as this sweep. A frame inherited from the task and never falsified is as expensive as a re-built feature; both gates run before any decision locks.
+
 ## Step 0b — Size the task
 
 After the sweep returns, classify the task as **Small** or **Large**. There is no middle tier and no confirmation step — assess, decide, state the chosen size with a one-line reason, and proceed.

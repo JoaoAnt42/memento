@@ -7,6 +7,29 @@ description: Step 1 of Memento. Use when receiving a new task (markdown, screens
 
 Explore intent, requirements, constraints. No code yet. No plan file yet.
 
+## Premise Auditor (run first, before any options)
+
+The most expensive misses aren't bad design — they're a **wrong frame inherited from the task** and **environment facts assumed from partial code reads**. Propose-4-options refines *inside* a frame; it cannot break the frame. The auto-review skeptic (step 3) attacks the *plan within locked decisions* — by then it's too late. So before any decision sets, dispatch one **Premise Auditor** subagent (`Explore`-class), in parallel with the `memento-0` prior-art sweep.
+
+**Independence is the mechanism.** Give it the **raw task** (the user's original words) + repo access — *never* your already-narrowed summary. Brief it plainly: *"the framing in this task may be wrong; assume nothing the task asserts is true until checked."* If you feed it your frame, it inherits your blind spot. (Same reason test-writer ≠ implementer.)
+
+**Mandate — attack the premise + environment, NOT the design:**
+- Enumerate the **load-bearing assumptions** the task's framing rests on — especially **environment / topology / reachability** facts: where does each system actually run, who connects to whom, what is reachable from where, who owns the data/rule.
+- For each: is it **confirmed**, **falsifiable from the repo** (give the file/line that would settle it), or **human-only** (tribal/infra knowledge not in the repo)?
+- Construct **at least one alternative frame** — "what if the obvious target/owner/approach in the task is the wrong one?"
+- Design trade-offs are out of scope. That's what propose-4-options and auto-review are for.
+
+**Output budget (hard):** return only —
+1. ≤5 load-bearing assumptions, ranked, each `{confidence, falsifier, where-to-check}`.
+2. The strongest alternative frame it could construct (or "none found").
+3. **Human-only questions** — the few things no repo read can settle. This list is the cheap kill-switch: one such question asked early can collapse an entire wrong design.
+
+No 20-item doubt dumps — an unscoped skeptic trains you to ignore it.
+
+**Gate:** brainstorming may not proceed to propose-4-options until the Auditor's human-only questions have been asked and the environment/topology facts it flagged are confirmed (repo evidence or human). A frame-breaking finding loops scope back, not forward.
+
+This is a **pre-decision** instrument only. Do not re-run it as a standing reviewer in later steps — post-decision, it's just noise on top of auto-review.
+
 ## Rules
 
 - **Prior-art sweep is an input.** `memento-0` ran a prior-art sweep before sizing. If it found an existing/legacy implementation, scope against that — do not re-derive the feature from the surface request. If brainstorming uncovers a domain area the sweep did not cover, dispatch a targeted follow-up `Explore` sweep before concluding.
@@ -23,6 +46,8 @@ Explore intent, requirements, constraints. No code yet. No plan file yet.
 A shared understanding of what the user wants and why. No artifact written yet — that happens in step 2 (`memento-2-planning`).
 
 ## Transition
+
+**Premise gate.** The Premise Auditor must have run, its human-only questions been asked, and the environment/topology facts it flagged been confirmed (repo evidence or human). An unresolved frame-breaking finding loops scope back — it does not transition.
 
 **Confidence gate.** Before transitioning to planning, every domain or business-rule claim below HIGH confidence must be confirmed against an authoritative source — the team leader, a written spec, or the prior implementation. List the unconfirmed claims to the user and resolve them; do not start planning on top of unconfirmed business rules.
 
