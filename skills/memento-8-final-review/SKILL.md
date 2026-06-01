@@ -41,6 +41,8 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 
 ## Transition
 
+After opening the PRs: if the plan's `repos:` list has **2+ entries**, invoke `memento-8b-cross-pr-review` to check the contract between them first; a single-repo plan goes straight to `memento-9-receiving-review`.
+
 On review feedback from humans on the PR, invoke `memento-9-receiving-review`.
 
 Step 9 may re-invoke this skill when human-review changes are non-trivial (logic changes, multi-file fixes, bug/security fixes, or >~30 lines of substantive diff). When re-invoked, run the same five-reviewer pass against the updated branch — Bugs reviewer takes top priority since the goal is catching regressions introduced by the review-driven changes.

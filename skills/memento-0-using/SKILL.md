@@ -65,6 +65,7 @@ If the task turns out larger than it looked, stop and restart it as Large.
 7. `memento-7-implementing` — independent impl agents, input = red SHA, confirm green
 7.5. `memento-7b-human-smoke` — **optional**, gated by plan flag `needs_human_smoke: true`. Start services, hand user a click-checklist, wait for verdict. Loops back on found-issue.
 8. `memento-8-final-review` — parallel reviewers (Bugs, CRAP, Simplifier, Devil's Advocate, Tests) + Orchestrator reconciliation. Precedence: Bugs > CRAP > Simplifier > Devil's Advocate > Tests
+8.5. `memento-8b-cross-pr-review` — **optional**, multi-repo only (`repos:` ≥2). Checks the contract between the per-repo PRs (API/type/event/migration coherence); applies fixes in the worktrees and pushes. Skipped for single-repo plans.
 9. `memento-9-receiving-review` — consume review feedback with technical rigor, not performative agreement
 
 ## Rules
