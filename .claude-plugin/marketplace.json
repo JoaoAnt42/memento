@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Memento way-of-work for Claude Code",
-    "version": "0.1.1"
+    "version": "0.1.2"
   },
   "plugins": [
     {
       "name": "memento",
       "source": "./",
       "description": "A Claude Code way-of-work cycle. Brainstorm → plan → auto-review → human-review → workbench → TDD-red → implement → smoke → final-review → receiving-review. Independent agents for test/impl/review.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "João António"
       },
