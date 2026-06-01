@@ -31,6 +31,18 @@ done
 cp commands/use_memento.md ~/.claude/commands/use_memento.md
 ```
 
+## Local development
+
+The plugin installs from a **version-pinned cache** — `update-all` (`/plugin marketplace update`) only re-pulls when the `version` field changes, *not* on every commit. To ship an edit:
+
+1. Edit skills/commands in your local clone.
+2. Bump `version` in **both** `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` (all three fields must match).
+3. Commit and push to `master`.
+4. In Claude: `/plugin marketplace update memento` then `/plugin update memento@memento`.
+5. Restart Claude.
+
+Skip the version bump and the update is a silent no-op — Claude keeps serving the cached version. Pushing requires the `JoaoAnt42` GitHub identity (the clone's `origin` uses SSH).
+
 ## Use
 
 ```
