@@ -10,7 +10,7 @@ Review feedback is a hypothesis, not an instruction. Verify before implementing.
 Review feedback arrives on a specific repo's PR — work in that repo's worktree (the matching `repos:` entry). After **each** repo's PR merges, remove that repo's worktree:
 
 ```sh
-# Per merged repos: entry — REPO=<entry.path>  WT=<entry.worktree>  BRANCH=<entry.branch>
+# For each merged `repos:` entry — REPO=<entry.path>  WT=<entry.worktree>  BRANCH=<entry.branch>
 git -C "$REPO" worktree remove "$WT"
 git -C "$REPO" branch -d "$BRANCH" 2>/dev/null || true
 ```
