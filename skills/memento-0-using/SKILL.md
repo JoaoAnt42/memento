@@ -34,8 +34,17 @@ After the sweep returns, classify the task as **Small** or **Large**. There is n
 
 | Size | Fits when |
 |------|-----------|
-| **Small** | 1–2 files, UI-only or localized change, no new logic branch, no API/contract/schema change, low blast radius — and the prior-art sweep found nothing substantial. |
-| **Large** | Anything else — multiple files with real logic, new contract/schema, cross-cutting, risky, intent unclear, or the sweep found a substantial prior implementation. |
+| **Small** | ALL of: 1–2 files; localized and self-evident; no new logic branch; touches none of the Large triggers below; prior-art sweep found nothing substantial. |
+| **Large** | Anything else — multiple files with real logic, intent unclear, or **any single Large trigger fires, regardless of how small the diff looks.** |
+
+**Large triggers (any one → Large, even for a 1-line diff).** File count is *surface*, not *risk* — a one-field "dropdown" was a ~290-line approval resolver (the 0a story). Size up, not down, when the change touches:
+
+- **A business / domain rule** — approval routing, eligibility, pricing, any calculation. "Looks like two variables" is the tell to dig, not the conclusion.
+- **Auth, permissions, or security.**
+- **Persisted data** — schema, migration, or anything that writes/alters stored state. Hard to reverse.
+- **A shared or public contract** — API, event, or a symbol consumed by other code/repos. Blast radius exceeds the diff.
+- **Money, deletion, or any irreversible / external side effect** — payments, emails, deploys.
+- **Concurrency or ordering** — async, locks, races.
 
 When genuinely unsure, choose **Large** — over-process costs time, under-process costs a missed bug. The user can still override by saying so; otherwise don't stop for confirmation.
 
