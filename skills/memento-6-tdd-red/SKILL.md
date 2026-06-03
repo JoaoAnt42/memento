@@ -9,6 +9,8 @@ Write tests, confirm red, commit the red SHA. That SHA is the contract handed to
 
 Each task is tagged `[repo: <label>]`. Run its test-writer and verifier in that repo's worktree — the `worktree:` of the matching `repos:` entry — so the red commit lands on that repo's branch. Different tasks may sit in different repos.
 
+**Concurrency.** Dispatch independent tasks' chains in one batch. **Across repos** is the free win — separate worktrees, no collision. **Same-repo** tasks share a worktree, so run them **sequentially** by default; git won't check one branch out in two worktrees, so parallelizing them takes a per-task branch + a later merge — opt-in, only when the speedup beats the merge risk.
+
 ## Protocol
 
 1. For each task, dispatch a **test-writer subagent** (**`model: sonnet`**) on the feature branch. Brief: write **1 happy-path + 1 edge-case test** (not two happy paths). No implementation. Sonnet is enough — pattern work from a structured spec.
@@ -20,6 +22,7 @@ Each task is tagged `[repo: <label>]`. Run its test-writer and verifier in that 
 ## Rules
 
 - Test-writer ≠ verifier ≠ implementer. Three independent subagents.
+- **Parallel across repos, sequential within a repo.** Independent tasks fan out in one batch; same-repo tasks share a worktree → run in order (per-task branch + merge to override). The writer → verifier → red-commit chain stays sequential within a task.
 - **Models:** test-writer = Sonnet, verifier = Haiku. Independence > model strength for these roles.
 - Exactly 2 tests per task: 1 happy + 1 edge. Not 2 happy. Not 3.
 - Red commit is the handoff artifact. No green code lands on top of uncommitted red.

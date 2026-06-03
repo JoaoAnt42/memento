@@ -9,6 +9,8 @@ One implementer subagent per task, **independent from the test-writer**. Input: 
 
 Each task is tagged `[repo: <label>]`. Before dispatching a task's subagents, `cd` into that repo's worktree — the `worktree:` of the matching `repos:` entry — so they inherit the right cwd. Different tasks may run in different repos.
 
+**Concurrency.** Implementers mutate source, so isolation gates parallelism. **Across repos:** fan out — separate worktrees already isolate them. **Same repo:** **sequential by default** — parallel implementers in one worktree race on files and entangle the per-task green commits, and git won't check one branch out twice. Parallelize same-repo tasks only with a per-task branch + worktree + a merge after — opt-in; weigh merge-conflict risk against time saved.
+
 ## Protocol
 
 1. For each task, dispatch an **implementer subagent** (`model: opus`) on the feature branch. Brief:
@@ -30,6 +32,7 @@ Each task is tagged `[repo: <label>]`. Before dispatching a task's subagents, `c
 - **Models:** implementer = Opus, verifier = Haiku. Don't downgrade the implementer.
 - Tests are immutable during step 7. If tests are wrong, loop back to step 6.
 - One implementer per task (not multiple competing). Step 8 is the check, not redundant implementation.
+- **Parallel across repos, sequential within a repo by default.** Across-repo tasks isolate via separate worktrees and fan out; same-repo tasks run in order unless each gets a per-task branch + worktree + merge. The implementer → verifier → green-commit chain stays sequential within a task.
 
 ## Transition
 
