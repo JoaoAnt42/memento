@@ -17,7 +17,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
    - **Bugs** — correctness defects, security, data loss, race conditions
    - **CRAP** — Change Risk Anti-Patterns: high-complexity low-coverage functions
    - **Simplifier** — cuts, merges, premature abstraction, oversized new files
-   - **Devil's Advocate** — assumption attacks, edge cases
+   - **Devil's Advocate** — assumption attacks, edge cases; flags any module, layer, or path in the diff that is **not in the plan's `## Data contract`** — flow the implementer introduced off-contract (no-op when the plan has no contract section)
    - **Tests** — coverage gaps, weak assertions, flaky patterns
 2. Each returns a list of findings with severity.
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.

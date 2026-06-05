@@ -33,6 +33,13 @@ repos:                           # required. One entry per repo the plan touches
 - **Q1 <topic>:** <picked answer> — <one-line reason>. (User: confirm | override → <new>)
 - **Q2 <topic>:** <picked answer> — <one-line reason>. (User: confirm)
 
+## Data contract   <!-- large / multi-seam plans only; omit for small single-seam tasks -->
+Pin the **seams**, not the internal steps. For each boundary the work crosses:
+- **<module/function>** — signature `<in> → <out>`; consumes `<data>`, produces `<data>`.
+- Flow: `<source> → <seam> → <seam> → <sink>`.
+
+Anything not listed here is **out of contract**: the implementer may not introduce a new module, layer, or path without amending this section first.
+
 ## Tasks
 - [ ] T1 [repo: <label>]: ...
 - [ ] T2 [repo: <label>]: ...
@@ -53,6 +60,7 @@ repos:                           # required. One entry per repo the plan touches
 - **Status frontmatter.** Update `status:` as the cycle advances.
 - **Tasks are atomic.** Each task must be independently testable so steps 6–8 can dispatch independent agents.
 - **Every task names its repo.** Tag each task `[repo: <label>]` matching a `repos:` entry — this is how steps 6–8 know which worktree to run it in. A single-repo plan still tags; there is just one label.
+- **Pin seams, not steps.** For large or multi-seam plans, fill `## Data contract`: fix module boundaries, signatures, and what data crosses each seam. This is the anti-drift anchor steps 6–8 enforce against — tasks decompose *from* it. Pin *boundaries*, not every internal step: over-specifying detail you can't yet know makes the plan brittle and invites rigid-but-wrong implementation. Omit the section entirely for small single-seam tasks.
 
 ## Transition
 
