@@ -41,8 +41,9 @@ Pin the **seams**, not the internal steps. For each boundary the work crosses:
 Anything not listed here is **out of contract**: the implementer may not introduce a new module, layer, or path without amending this section first.
 
 ## Tasks
-- [ ] T1 [repo: <label>]: ...
-- [ ] T2 [repo: <label>]: ...
+- [ ] T1 [repo: <label>] [disjoint]: ...
+- [ ] T2 [repo: <label>] [disjoint]: ...
+- [ ] T5 [repo: <label>]: ...   <!-- no [disjoint] → barrier; runs after the parallel group above merges -->
 
 ## Open risks
 - ...
@@ -61,6 +62,7 @@ Anything not listed here is **out of contract**: the implementer may not introdu
 - **Tasks are atomic.** Each task must be independently testable so steps 6–8 can dispatch independent agents.
 - **Every task names its repo.** Tag each task `[repo: <label>]` matching a `repos:` entry — this is how steps 6–8 know which worktree to run it in. A single-repo plan still tags; there is just one label.
 - **Pin seams, not steps.** For large or multi-seam plans, fill `## Data contract`: fix module boundaries, signatures, and what data crosses each seam. This is the anti-drift anchor steps 6–8 enforce against — tasks decompose *from* it. Pin *boundaries*, not every internal step: over-specifying detail you can't yet know makes the plan brittle and invites rigid-but-wrong implementation. Omit the section entirely for small single-seam tasks.
+- **`[disjoint]` authorizes parallelism.** Tag a task `[disjoint]` only when self-research has *verified* it touches a file set no sibling task touches — then steps 6–7 may run it concurrently with other same-repo `[disjoint]` tasks via per-task worktree + merge. A task **without** `[disjoint]` is a **barrier**: it runs sequentially, after the preceding tasks complete and merge (this is how a dependent task sequences behind a group of independent ones). Default to no flag — claim disjointness only when proven, because a wrong claim costs a merge conflict mid-cycle.
 
 ## Transition
 

@@ -9,7 +9,7 @@ Write tests, confirm red, commit the red SHA. That SHA is the contract handed to
 
 Each task is tagged `[repo: <label>]`. Run its test-writer and verifier in that repo's worktree — the `worktree:` of the matching `repos:` entry — so the red commit lands on that repo's branch. Different tasks may sit in different repos.
 
-**Concurrency.** Dispatch independent tasks' chains in one batch. **Across repos** is the free win — separate worktrees, no collision. **Same-repo** tasks share a worktree, so run them **sequentially** by default; git won't check one branch out in two worktrees, so parallelizing them takes a per-task branch + a later merge — opt-in, only when the speedup beats the merge risk.
+**Concurrency.** Dispatch independent tasks' chains in one batch. **Across repos** is the free win — separate worktrees, no collision. **Same-repo** tasks share a worktree, so they run **sequentially** by default. Same-repo tasks tagged **`[disjoint]`** fan out in parallel via a per-task branch + worktree + a later merge — the plan has already asserted they touch disjoint file sets. A task **without** `[disjoint]` is a **barrier**: it runs after the preceding parallel group merges. git won't check one branch out in two worktrees, so the per-task worktree is what makes the fan-out legal.
 
 ## Protocol
 
