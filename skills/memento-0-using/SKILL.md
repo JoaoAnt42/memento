@@ -48,6 +48,32 @@ After the sweep returns, classify the task as **Small** or **Large**. There is n
 
 When genuinely unsure, choose **Large** — over-process costs time, under-process costs a missed bug. The user can still override by saying so; otherwise don't stop for confirmation.
 
+## Step 0c — CLAUDE.md staleness signal
+
+Before routing, check the target repo's `CLAUDE.md` for staleness — a **non-blocking** signal, never an auto-action. Acting on a stale doc can carry wrong assumptions into the cycle; catching it here is cheap.
+
+Run this as **one isolated Bash call** in the repo root and read its stdout. It exits silently on any miss (no tracked `CLAUDE.md`, shallow/detached state), so it can never block routing:
+
+```sh
+# GNU date assumed (Linux). Detached HEAD / shallow clone may undercount commits → fails safe (silent).
+f=CLAUDE.md; git ls-files --error-unmatch "$f" >/dev/null 2>&1 || f=.claude/CLAUDE.md
+git ls-files --error-unmatch "$f" >/dev/null 2>&1 || exit 0          # no tracked doc → silent
+sha=$(git log -1 --format=%H -- "$f"); last=$(git log -1 --format=%cI -- "$f")
+age=$(( ($(date +%s) - $(date -d "$last" +%s)) / 86400 ))
+since=$(git rev-list --count "$sha"..HEAD)                           # 0 when the doc is the newest commit
+[ "$age" -gt 21 ] && [ "$since" -gt 25 ] && echo STALE
+```
+
+Two-factor on purpose: the doc is untouched for **>21 days** AND **>25 commits** landed since. Both gates together avoid false positives — a calendar age alone fires on stable repos, a commit count alone fires on high-churn / auto-commit repos. Thresholds are heuristic; tune them here if they prove noisy.
+
+If the check prints `STALE`, surface a **non-blocking** prompt, default **no**: *"`CLAUDE.md` last changed >21d ago with N commits since — may be stale. Reconcile it against the code first? [y/N]"* Step 0c never edits the doc and never writes a plan (none exists yet on the Large route) — it only carries the verdict forward:
+
+- **No** (default) — route unchanged.
+- **Yes, Large route** — carry the flag into step 1: brief the Premise Auditor to verify `CLAUDE.md`'s load-bearing claims against the code (it reads code, so it reconciles additively there). If still unresolved when step 2 writes the plan, that step records the staleness under `## Open risks`.
+- **Yes, Small route** — the Small route writes a minimal plan now, so add a one-line note to its `## Context` (*"CLAUDE.md flagged stale at step 0c — review assumptions while implementing"*). Inform-only: no reconcile pass, and never rewrite or recreate the doc.
+
+Prints nothing → say nothing, route.
+
 ## Routes
 
 Steps 6–8 use **independent agents** — the test-writer cannot also be the implementer. Any step can loop back to an earlier step; this is a cycle, not a pipeline.
