@@ -17,6 +17,7 @@ The most expensive misses aren't bad design — they're a **wrong frame inherite
 - Enumerate the **load-bearing assumptions** the task's framing rests on — especially **environment / topology / reachability** facts: where does each system actually run, who connects to whom, what is reachable from where, who owns the data/rule.
 - For each: is it **confirmed**, **falsifiable from the repo** (give the file/line that would settle it), or **human-only** (tribal/infra knowledge not in the repo)?
 - Construct **at least one alternative frame** — "what if the obvious target/owner/approach in the task is the wrong one?"
+- **CLAUDE.md claims** — if briefed that `CLAUDE.md` was flagged stale (step 0c), or it reads stale, include its load-bearing claims among the assumptions you check; you read code, so verify each against the current code. A claim the code contradicts is a confidence blocker, reported with its where-to-check like any other.
 - Design trade-offs are out of scope. That's what propose-4-options and auto-review are for.
 
 **Output budget (hard):** return only —
@@ -49,6 +50,6 @@ A shared understanding of what the user wants and why. No artifact written yet �
 
 **Premise gate.** The Premise Auditor must have run, its human-only questions been asked, and the environment/topology facts it flagged been confirmed (repo evidence or human). An unresolved frame-breaking finding loops scope back — it does not transition.
 
-**Confidence gate.** Before transitioning to planning, every domain or business-rule claim below HIGH confidence must be confirmed against an authoritative source — the team leader, a written spec, or the prior implementation. List the unconfirmed claims to the user and resolve them; do not start planning on top of unconfirmed business rules.
+**Confidence gate.** Before transitioning to planning, every domain or business-rule claim below HIGH confidence must be confirmed against an authoritative source — the team leader, a written spec, or the prior implementation. List the unconfirmed claims to the user and resolve them; do not start planning on top of unconfirmed business rules. A `CLAUDE.md` claim flagged stale (step 0c or the Auditor) resolves by **additive reconciliation**: edit the doc to *add* missing facts, *fix* provably-wrong references/values, and *annotate* contradictions, while preserving the existing human prose and structure — never wholesale-rewrite, reorder, or recreate it. The user may defer the doc fix and proceed.
 
 When user signals "ok, plan it" (or equivalent) and the confidence gate is clear, invoke `memento-2-planning`.
