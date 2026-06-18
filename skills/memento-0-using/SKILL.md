@@ -110,8 +110,11 @@ If the task turns out larger than it looked, stop and restart it as Large.
 - **Red commit SHA is the handoff artifact** from step 6 to step 7. Impl cannot start before red is committed. (Large only.)
 - **Loop back freely.** If reality contradicts the plan, update the plan. Don't silently bypass it. If a Small task outgrows its size, restart it as Large.
 - **User overrides always win.** CLAUDE.md and direct instructions beat this skill — including the size choice.
+- **Worktree always — never the user's main working tree.** Every task does its file modifications in a dedicated git worktree, regardless of size: Large, Small, or a one-line typo. Memento never edits the checked-out working tree in place. This isolation is the whole point — it's what stops two back-to-back or concurrent tasks from entangling in one working directory. **The only exception is an explicit user opt-out** ("work in place" / "no worktree" / "on the current branch"); absent that instruction, create the worktree even when the diff looks trivial.
 - **One worktree per repo.** Each `repos:` entry gets a worktree at `<repo_parent>/<repo_name>-worktrees/<slug>`, recorded in that entry's `worktree:`. A task runs in the worktree of the repo it is tagged with. Cleanup happens via the safe-prune sweep before worktree creation (only merged + clean worktrees are removed) and explicitly in step 9 after each PR merges.
 
-## When to skip Memento entirely
+## Trivial fixes — lighter process, same isolation
 
-Trivial one-line fixes, typo corrections, config tweaks, doc edits. Below even the Small route — just do it. Memento is for multi-step implementation work.
+Trivial one-line fixes, typo corrections, config tweaks, doc edits skip the *process* — no brainstorm, no planning, no review hand-off. They do **not** skip the worktree: per **Worktree always**, even a typo runs through the Small route so it lands in its own worktree and PR, never in the user's main working tree. The isolation is cheap and is exactly what prevents the cross-task conflicts this default exists to stop. Memento is for multi-step implementation work; this tier trims its ceremony, not its isolation.
+
+**Editing the main working tree directly** — no worktree, no branch, no PR — happens **only when the user explicitly asks** ("just do it in place", "no worktree", "on the current branch"). That opt-out is the sole exception to **Worktree always**.

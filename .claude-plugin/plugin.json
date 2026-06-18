@@ -1,7 +1,7 @@
 {
   "name": "memento",
   "description": "A Claude Code way-of-work cycle. Brainstorm → plan → auto-review → human-review → workbench → TDD-red → implement → smoke → final-review → receiving-review. Independent agents for test/impl/review.",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": {
     "name": "João António",
     "url": "https://github.com/JoaoAnt42"
