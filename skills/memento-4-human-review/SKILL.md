@@ -34,6 +34,16 @@ git -C "$REPO" worktree add "$WT" -b "$BRANCH" "$BASE" 2>/dev/null \
 
 Record each worktree path back into its `repos:` entry as `worktree: <abs-path>`. Subsequent steps (6, 7, 7b, 8, 9) do **not** share one cwd — each task is tagged `[repo: <label>]`, and its agent runs in that repo's worktree.
 
+## Linear sync (on worktree creation)
+
+If the plan frontmatter has a `linear:` issue id, sync the ticket once the worktree exists — this is the moment work actually starts. Skip entirely when `linear:` is absent. Use the user's own Linear account via the Linear MCP.
+
+1. `get_issue` the id; read its current **state** and **assignee**.
+2. **Assign — no-steal.** Set assignee to the user (`get_user` with `query: "me"`) **only if** the ticket is unassigned or already the user's. If it's assigned to someone else, leave it and note that in one line.
+3. **In Progress — forward-only.** Move to the team's "In Progress" status **only if** the current state's `type` is `backlog`, `unstarted`, or `triage`. **Never** regress a ticket already `started` (In Progress / In Review) or `completed`/`canceled` — leave those untouched. Resolve the target status id via `list_issue_statuses` for the ticket's team; if no "In Progress" status exists, skip and say so.
+
+Both moves are idempotent: re-running the cycle on an already-claimed, already-started ticket changes nothing.
+
 ## Safe-prune sweep
 
 Run before creating worktrees — **once per distinct `path` in the plan's `repos:` list.** **Only prune worktrees that live under `<repo>-worktrees/` AND whose branch is merged into that repo's base AND whose working tree is clean.** No age cutoff. No exceptions for unmerged or dirty trees. The path filter is the safety guard — keeps memento away from worktrees it didn't create.
