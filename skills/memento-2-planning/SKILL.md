@@ -5,7 +5,7 @@ description: Step 2 of Memento. Use after brainstorming converges, to write a du
 
 # Memento — Planning
 
-Write the plan to `~/Documents/be_JLA/work/plans/YYYY-MM-DD-<slug>.md`. Never into the repo.
+Write the plan **once, at convergence** (see [Checkpoint, don't churn](#rules)) to `~/Documents/be_JLA/work/plans/YYYY-MM-DD-<slug>.md`. Never into the repo.
 
 ## Plan file structure
 
@@ -50,7 +50,7 @@ Anything not listed here is **out of contract**: the implementer may not introdu
 - ...
 ```
 
-**While questioning** (live), keep the 4 options visible so the user can pick from them. **Once the user answers**, collapse the question to the one-line `Decisions` bullet above and delete the option list. The unselected options are dead weight — the picked answer + reason is the load-bearing record.
+**While questioning** (live), keep the 4 options visible so the user can pick from them. **Once the user answers**, collapse the question to its one-line `Decisions` bullet above **in the conversation** (it reaches the file's `## Decisions` at convergence) and drop the option list. The unselected options are dead weight — the picked answer + reason is the load-bearing record.
 
 ## Design seed (optional — new-system / large plans only)
 
@@ -68,11 +68,12 @@ Emit the sections below, then **fold the result back into the plan**: the contai
 
 ## Rules
 
-- **Propose-4-options, one question at a time.** Every question where multiple reasonable answers exist: 4 options, pick one, say why. **Ask one question per turn — wait for the user's answer before moving on.** Batching 8 questions at once is daunting and produces shallow answers. The picked option + user response is recorded in the file as each one resolves.
+- **Propose-4-options, one question at a time.** Every question where multiple reasonable answers exist: 4 options, pick one, say why. **Ask one question per turn — wait for the user's answer before moving on.** Batching 8 questions at once is daunting and produces shallow answers. The picked option + user response accumulates in the **live conversation** as each one resolves — that running conversation is the working record during questioning; the plan file is not written per question (see **Checkpoint, don't churn**).
 - **Order questions by blast radius.** Ask the decisions that constrain later decisions first (architecture > scope > interface > implementation detail). A later answer should never invalidate an earlier one.
 - **Self-research first.** Spawn Agent(Explore) against the codebase. Read relevant code. Never ask what you can discover.
 - **Confidence + falsifier on load-bearing claims.** Tag every research finding scope rests on with confidence (high / medium / low), a falsifier, and its source. A claim below HIGH goes in `## Open risks` with its falsifier. A *domain or business-rule* claim below HIGH is not a risk to note — it is a **blocking confirmation**: flag it in `## Open risks` as `BLOCKING — confirm with team leader` and resolve it before the plan leaves planning. (Planning does its own research — re-apply this gate here even if brainstorming already cleared a claim.)
 - **Design seed is optional and gated.** Only for new systems or multi-seam plans (see [Design seed](#design-seed-optional--new-system--large-plans-only)). Its C4 boundaries seed `## Data contract`; its unconfirmed security or domain items seed `## Open risks` under the same confidence gate. Never run it for small single-seam features.
+- **Checkpoint, don't churn.** During questioning the live conversation is the working record; write the plan file **once, at convergence** — a single write carrying the full frontmatter + all resolved `Decisions`. Never write the file per question. Accepted tradeoff: if a session dies mid-questioning the in-progress plan survives only in conversation context — acceptable because questioning is synchronous and interactive. The operational frontmatter (`repos:`, `status:`) rides in that convergence write and every later boundary write, so it is always the durable part.
 - **Append, don't overwrite.** Each subsequent step (auto-review, implementation notes, review outcomes) appends a section.
 - **Status frontmatter.** Update `status:` as the cycle advances.
 - **Tasks are atomic.** Each task must be independently testable so steps 6–8 can dispatch independent agents.
