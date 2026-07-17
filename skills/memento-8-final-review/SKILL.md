@@ -23,10 +23,11 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
 5. Present consolidated review to the user. For non-trivial changes, **pause for user confirmation before applying**.
-6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: done`.
-7. Append a single short `## Final review changes` section to the plan listing **only**:
-   - What was changed (one bullet per change, with the post-review SHA).
-   - What was deferred + one-line reason (security/perf items pushed to a follow-up, etc.).
+6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`.
+7. **Write the decision record into the PR body — not into the plan.** Cover only:
+   - What changed and why (one bullet per non-obvious decision).
+   - What was deliberately *not* done, and why. The reviewer's first question is always "why didn't you also fix X, two lines away?" — answer it before they ask.
+   - What was deferred + one-line reason, with a ticket link if one exists.
 
    **Do not write a transcript.** No per-finding accept/reject lists, no Bugs #N / Simplifier #N enumeration, no rationale tree. The diff and the bullets are the record.
 
@@ -37,6 +38,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 - Precedence is strict. A Bugs finding beats a Simplifier finding, always.
 - **Replace, don't append** — same rule as step 3. If you rewrite a section, remove the old one.
 - PR is opened **here**, not earlier.
+- **The PR body is the only place the decision record goes.** Never mirror it into the plan. A PR is reachable from the code (`git blame` → commit → PR), durable, and visible to the team; a plan file is local, personal, and invisible to everyone else — nobody debugging a line six months from now will grep a personal vault for it. Writing both is duplicated effort whose second copy no future reader finds. The plan is a live-cycle coordination artifact, not an archive; step 9 deletes it on merge.
 - Simplifier flags **newly created** files >~300 LOC and proposes splits. It does **not** propose splitting pre-existing large files unless the diff makes them substantively worse.
 
 ## Transition

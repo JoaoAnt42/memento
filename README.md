@@ -9,6 +9,8 @@ Every task starts with a **prior-art sweep** (find any existing implementation b
 
 Independent agents for test / implement / review. Red-commit SHA is the handoff artifact.
 
+The plan file is a **live-cycle coordination artifact, not an archive.** It hands state between steps; the durable record of what shipped is the PR body. On merge the plan is deleted — the exceptions are a task that never merged, or one that grew a post-merge life (revert, rollout, runbook), which graduates out of `plans/` instead.
+
 ## Install
 
 ```
@@ -63,9 +65,9 @@ Entry point is `memento-0-using`. Each step invokes the next skill in sequence.
 | 6 | `memento-6-tdd-red` | Write failing tests, commit red SHA |
 | 7 | `memento-7-implementing` | Independent impl agent, input = red SHA |
 | 7.5 | `memento-7b-human-smoke` | Optional; gated by `needs_human_smoke: true` |
-| 8 | `memento-8-final-review` | Parallel reviewers, precedence: Bugs > CRAP > Simplifier > DA > Tests |
+| 8 | `memento-8-final-review` | Parallel reviewers, precedence: Bugs > CRAP > Simplifier > DA > Tests. Decision record goes in the PR body, not the plan |
 | 8.5 | `memento-8b-cross-pr-review` | Optional, multi-repo only (`repos:` ≥2). Cross-PR contract check; applies fixes in worktrees and pushes |
-| 9 | `memento-9-receiving-review` | Verify, push back, or implement. Loops back to step 8 on non-trivial review changes. |
+| 9 | `memento-9-receiving-review` | Verify, push back, or implement. Loops back to step 8 on non-trivial review changes. Deletes the plan on merge (runbooks/reverts graduate out instead) |
 
 ## Requirements
 
