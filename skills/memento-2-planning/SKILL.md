@@ -16,7 +16,6 @@ status: planning
 created: YYYY-MM-DD
 type: feat|fix|refactor|chore|docs|test|style|perf|ci|build   # required. The conventional-commit / PR-title prefix.
 needs_human_smoke: true|false   # required, no default. true for user-visible behavior; false for pure internal work.
-linear: <ISSUE-ID>              # optional. Linear issue identifier (e.g. COM-28) when the plan is sourced from a ticket. Step 4 forward-transitions it to In Progress + assigns it on worktree creation.
 repos:                           # required. One entry per repo the plan touches. A single-repo plan is a one-element list.
   - label: <short-id>            #   short id (backend, frontend, or `repo` for a single-repo plan). Tasks reference it.
     path: <abs-path>             #   absolute path to the source repo root.
