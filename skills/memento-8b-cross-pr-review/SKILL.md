@@ -23,7 +23,7 @@ Run this step only when the plan's `repos:` list has **2 or more entries** (a mu
    - Feature-flag coherence
 
    Present the inferred connection + surface to the user and **wait for confirmation or correction**. If genuinely unrelated, skip to step 9.
-3. Dispatch **one independent contract agent** (not the implementer, not a step-8 reviewer), given all PR diffs together + the confirmed surface. It returns **mismatches only**, each naming the repo/PR where the fix belongs (prefer the consumer side), with severity and a concrete fix:
+3. Dispatch **one independent contract agent** (**`model: opus`**, not the implementer, not a step-8 reviewer), given all PR diffs together + the confirmed surface. It returns **mismatches only**, each naming the repo/PR where the fix belongs (prefer the consumer side), with severity and a concrete fix:
    - API contract mismatch — casing, missing field, status-code handling
    - Type/enum drift between repos
    - Missing matching change — endpoint with no caller; removed field still referenced
@@ -38,6 +38,7 @@ Run this step only when the plan's `repos:` list has **2 or more entries** (a mu
 
 - Multi-repo only. Single-repo plans never reach this step.
 - The contract agent is independent — not the implementer, not a step-8 reviewer.
+- **Model:** contract agent = Opus — cross-repo contract mismatches are correctness-critical, the same tier as the Bugs reviewer in step 8.
 - Apply fixes in the worktree and **push to the existing PR branch** — do not open new PRs or post inline comments on your own PRs.
 - Fix lands on the side it belongs (usually the consumer). If genuinely cross-cutting, fix the consumer and name the producer in the commit message.
 - If a fix is itself a non-trivial logic change in one repo, treat it like step 9's re-review trigger — re-run `memento-8-final-review` on that repo's branch.

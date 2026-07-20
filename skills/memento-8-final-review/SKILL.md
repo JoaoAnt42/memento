@@ -14,11 +14,11 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 ## Protocol
 
 1. For each task's green branch, dispatch **five reviewer subagents in parallel** (single message):
-   - **Bugs** — correctness defects, security, data loss, race conditions
-   - **CRAP** — Change Risk Anti-Patterns: high-complexity low-coverage functions
-   - **Simplifier** — cuts, merges, premature abstraction, oversized new files
-   - **Devil's Advocate** — assumption attacks, edge cases; flags any module, layer, or path in the diff that is **not in the plan's `## Data contract`** — flow the implementer introduced off-contract (no-op when the plan has no contract section)
-   - **Tests** — coverage gaps, weak assertions, flaky patterns
+   - **Bugs** (**`model: opus`**) — correctness defects, security, data loss, race conditions
+   - **CRAP** (**`model: sonnet`**) — Change Risk Anti-Patterns: high-complexity low-coverage functions
+   - **Simplifier** (**`model: sonnet`**) — cuts, merges, premature abstraction, oversized new files
+   - **Devil's Advocate** (**`model: sonnet`**) — assumption attacks, edge cases; flags any module, layer, or path in the diff that is **not in the plan's `## Data contract`** — flow the implementer introduced off-contract (no-op when the plan has no contract section)
+   - **Tests** (**`model: sonnet`**) — coverage gaps, weak assertions, flaky patterns
 2. Each returns a list of findings with severity.
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
@@ -34,6 +34,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 ## Rules
 
 - Five reviewers, all independent subagents. None of them are the implementer.
+- **Models:** Bugs = Opus — correctness/security is the final safety net; don't downgrade it. CRAP, Simplifier, Devil's Advocate, Tests = Sonnet. Orchestrator = Opus: it applies precedence, reconciles, and writes the PR body. Same principle as step 7 — keep the load-bearing roles strong, tier the rest.
 - Orchestrator is the only writer.
 - Precedence is strict. A Bugs finding beats a Simplifier finding, always.
 - **Replace, don't append** — same rule as step 3. If you rewrite a section, remove the old one.
