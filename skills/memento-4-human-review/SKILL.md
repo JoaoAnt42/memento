@@ -7,6 +7,8 @@ description: Step 4 of Memento. Use after auto-review. Submits the updated plan 
 
 Submit the updated plan to the user. Wait for verdict.
 
+**Unattended sessions stop here** (`memento-0-using` step 0d). Set `status: auto-review`, report the plan path plus the `## Decisions taken unilaterally` list, and end the run. Do not synthesize a verdict, do not safe-prune, do not create worktrees. The human runs this step later from their own session. Approving your own plan is the one step in this cycle with no downstream check on it.
+
 ## Protocol
 
 1. Summarize the plan in ≤10 bullets (title, task list, top 3 decisions, top 3 risks). Link the plan file path.

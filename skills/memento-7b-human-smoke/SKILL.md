@@ -16,6 +16,8 @@ Run this step only if the plan frontmatter has `needs_human_smoke: true`. The fl
 
 If the flag is missing, halt and ask the user to set it in the plan.
 
+**Unattended sessions stop here when the flag is `true`** (`memento-0-using` step 0d). Set `status: smoke`, hand back the checklist you would have walked, and end the run. Never mark a smoke test passed that no human performed — that is the failure mode this step exists to catch.
+
 ## Protocol
 
 1. Read the plan. Extract `needs_human_smoke`. If `false`, skip to `memento-8-final-review`.
