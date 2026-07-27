@@ -33,6 +33,9 @@ repos:                           # required. One entry per repo the plan touches
 - **Q1 <topic>:** <picked answer> — <one-line reason>. (User: confirm | override → <new>)
 - **Q2 <topic>:** <picked answer> — <one-line reason>. (User: confirm)
 
+## Decisions taken unilaterally   <!-- unattended runs only (memento-0-using step 0d); omit when a human answered -->
+- **Q<n> <topic>:** options considered, the pick, why, and the falsifier that would overturn it.
+
 ## Data contract   <!-- large / multi-seam plans only; omit for small single-seam tasks -->
 Pin the **seams**, not the internal steps. For each boundary the work crosses:
 - **<module/function>** — signature `<in> → <out>`; consumes `<data>`, produces `<data>`.
@@ -68,6 +71,7 @@ Emit the sections below, then **fold the result back into the plan**: the contai
 ## Rules
 
 - **Propose-4-options, one question at a time.** Every question where multiple reasonable answers exist: 4 options, pick one, say why. **Ask one question per turn — wait for the user's answer before moving on.** Batching 8 questions at once is daunting and produces shallow answers. The picked option + user response accumulates in the **live conversation** as each one resolves — that running conversation is the working record during questioning; the plan file is not written per question (see **Checkpoint, don't churn**).
+- **Ask in plain numbered markdown — never an option-picker widget.** The question, then a numbered list, recommendation marked. The user replies with a number. A picker needs interactive key navigation, so it deadlocks any session driven over a pipe or a `send` command (see `memento-0-using` step 0d) and can't be answered from a phone or a log. Text is answerable from anywhere. Unattended, the same numbered options go into `## Decisions taken unilaterally` instead of into a question.
 - **Order questions by blast radius.** Ask the decisions that constrain later decisions first (architecture > scope > interface > implementation detail). A later answer should never invalidate an earlier one.
 - **Self-research first.** Spawn Agent(Explore) against the codebase. Read relevant code. Never ask what you can discover.
 - **Confidence + falsifier on load-bearing claims.** Tag every research finding scope rests on with confidence (high / medium / low), a falsifier, and its source. A claim below HIGH goes in `## Open risks` with its falsifier. A *domain or business-rule* claim below HIGH is not a risk to note — it is a **blocking confirmation**: flag it in `## Open risks` as `BLOCKING — confirm with team leader` and resolve it before the plan leaves planning. (Planning does its own research — re-apply this gate here even if brainstorming already cleared a claim.)

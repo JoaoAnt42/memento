@@ -74,6 +74,22 @@ If the check prints `STALE`, surface a **non-blocking** prompt, default **no**: 
 
 Prints nothing → say nothing, route.
 
+## Step 0d — Attended or unattended
+
+Memento's default shape assumes a human is present: it asks questions, waits for an approve/revise/reject verdict, and hands over a smoke checklist. A **delegated session** — one launched in the background (`aoe` or equivalent) and handed a kickoff file — has no one to answer. It hits the first question within minutes and parks there for hours, burning the parallelism the delegation was for.
+
+**Detect unattended** when any holds: the kickoff prompt says so; the session's only human turn is the launcher's "read `<file>` and execute it"; the user has stated the session runs in the background. When genuinely unsure, assume **attended** — a session that asks when it needn't costs a reply, one that decides when it shouldn't costs a wrong plan.
+
+**Unattended contract — never block, never self-approve.** The cycle has three human gates: the question loops (steps 1–2), the verdict (step 4), and the smoke test (step 7b). Unattended, they resolve as:
+
+- **Questions (1–2)** — do not ask. Still do the work: generate the 4 options, pick one, state why. Record every such pick in the plan under `## Decisions taken unilaterally` (question, options, choice, reasoning, and what would falsify it). That section is the review surface the questions would have been.
+- **Verdict (step 4)** — **hard stop.** Run 0a→3, write the plan, set `status: auto-review`, and hand back with the plan path plus the unilateral-decisions list. Never self-approve, never create worktrees, never proceed to step 6. The human approves later from their own session.
+- **Smoke (step 7b)** — when `needs_human_smoke: true`, stop at `status: smoke` and hand back the checklist rather than skipping it or declaring it passed.
+
+**Small route runs unattended end to end** — it has no question loop and no verdict gate, and it terminates at a PR, which is itself the review surface. Large stops at the step-4 gate.
+
+An unattended session that finds itself genuinely unable to proceed — a frame-breaking Auditor finding, a `BLOCKING` domain claim no repo read can settle — stops and reports rather than guessing. Blocked-and-explained beats plausible-and-wrong.
+
 ## Routes
 
 Steps 6–8 use **independent agents** — the test-writer cannot also be the implementer. Any step can loop back to an earlier step; this is a cycle, not a pipeline.
@@ -110,6 +126,7 @@ If the task turns out larger than it looked, stop and restart it as Large.
 - **Red commit SHA is the handoff artifact** from step 6 to step 7. Impl cannot start before red is committed. (Large only.)
 - **Loop back freely.** If reality contradicts the plan, update the plan. Don't silently bypass it. If a Small task outgrows its size, restart it as Large.
 - **User overrides always win.** CLAUDE.md and direct instructions beat this skill — including the size choice.
+- **Unattended never self-approves.** A delegated session (step 0d) decides its own design questions and records them, but stops dead at the step-4 verdict and the step-7b smoke gate. Deciding a trade-off and recording it is reversible; approving your own plan and building on it is not.
 - **Worktree always — never the user's main working tree.** Every task does its file modifications in a dedicated git worktree, regardless of size: Large, Small, or a one-line typo. Memento never edits the checked-out working tree in place. This isolation is the whole point — it's what stops two back-to-back or concurrent tasks from entangling in one working directory. **The only exception is an explicit user opt-out** ("work in place" / "no worktree" / "on the current branch"); absent that instruction, create the worktree even when the diff looks trivial.
 - **One worktree per repo.** Each `repos:` entry gets a worktree at `<repo_parent>/<repo_name>-worktrees/<slug>`, recorded in that entry's `worktree:`. A task runs in the worktree of the repo it is tagged with. Cleanup happens via the safe-prune sweep before worktree creation (only merged + clean worktrees are removed) and explicitly in step 9 after each PR merges.
 

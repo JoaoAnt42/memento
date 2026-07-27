@@ -39,6 +39,7 @@ This is a **pre-decision** instrument only. Do not re-run it as a standing revie
 - **Confidence + falsifier on load-bearing claims.** Every research finding that scope or the plan rests on gets tagged: confidence (high / medium / low), a falsifier (the observation that would change the answer), and its source (prior implementation / written spec / code read / inference). An inference with no authoritative source behind it is medium at best.
 - **No question limit.** Ask as many as needed.
 - **Propose-4-options.** For every question where multiple reasonable answers exist, generate 4 options, pick one, say why. User confirms or redirects. Banned: dumb binary yes/no when a multi-option framing exists.
+- **Ask in plain numbered markdown — never an option-picker widget.** The question, then a numbered list, recommendation marked. The user replies with a number. A picker needs interactive key navigation, so it deadlocks any session driven over a pipe or a `send` command (see step 0d) and can't be answered from a phone or a log. Text is answerable from anywhere. Applies to unattended runs too — there the same numbered options go into `## Decisions taken unilaterally` instead of into a question.
 - **Group related questions.** Don't drip-feed.
 - **Terse.** Fragments OK. No filler.
 
