@@ -140,6 +140,49 @@ else
   pass workbench-reference-removed
 fi
 
+summary_skill=skills/memento-8c-work-summary/SKILL.md
+
+if [ -f "$summary_skill" ] && grep -qE '^name: memento-8c-work-summary$' "$summary_skill"; then
+  pass work-summary-skill-exists
+else
+  fail work-summary-skill-exists "$summary_skill to exist with frontmatter 'name: memento-8c-work-summary'"
+fi
+
+if [ -f "$summary_skill" ] \
+  && grep -q 'full issue URL' "$summary_skill" \
+  && grep -q 'full PR URL' "$summary_skill" \
+  && grep -q 'Please review when possible' "$summary_skill"; then
+  pass work-summary-carries-output-contract
+else
+  fail work-summary-carries-output-contract "$summary_skill to spell out the summary block: full issue URL, full PR URL, review request"
+fi
+
+if [ -f "$summary_skill" ] && grep -q 'memento-9-receiving-review' "$summary_skill"; then
+  pass work-summary-transitions-to-step-9
+else
+  fail work-summary-transitions-to-step-9 "$summary_skill Transition to hand on to memento-9-receiving-review"
+fi
+
+if [ -f skills/memento-8-final-review/SKILL.md ] \
+  && grep -q 'memento-8c-work-summary' skills/memento-8-final-review/SKILL.md; then
+  pass final-review-hands-off-to-work-summary
+else
+  fail final-review-hands-off-to-work-summary "skills/memento-8-final-review/SKILL.md to route a single-repo plan to memento-8c-work-summary"
+fi
+
+if [ -f skills/memento-8b-cross-pr-review/SKILL.md ] \
+  && grep -q 'memento-8c-work-summary' skills/memento-8b-cross-pr-review/SKILL.md; then
+  pass cross-pr-review-hands-off-to-work-summary
+else
+  fail cross-pr-review-hands-off-to-work-summary "skills/memento-8b-cross-pr-review/SKILL.md to route a multi-repo plan to memento-8c-work-summary"
+fi
+
+if [ -f README.md ] && grep -qE '^\| *8\.6 *\|.*memento-8c-work-summary' README.md; then
+  pass readme-step-table-has-work-summary-row
+else
+  fail readme-step-table-has-work-summary-row "README.md step table to have a row for step 8.6 naming memento-8c-work-summary"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else

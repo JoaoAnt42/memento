@@ -40,11 +40,12 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 - **Replace, don't append** — same rule as step 3. If you rewrite a section, remove the old one.
 - PR is opened **here**, not earlier.
 - **The PR body is the only place the decision record goes.** Never mirror it into the plan. A PR is reachable from the code (`git blame` → commit → PR), durable, and visible to the team; a plan file is local, personal, and invisible to everyone else — nobody debugging a line six months from now will grep a personal vault for it. Writing both is duplicated effort whose second copy no future reader finds. The plan is a live-cycle coordination artifact, not an archive; step 9 deletes it on merge.
+- **The cycle always ends with a work summary.** `memento-8c-work-summary` emits it unprompted once the PRs are open — never close out by asking the user whether they want one.
 - Simplifier flags **newly created** files >~300 LOC and proposes splits. It does **not** propose splitting pre-existing large files unless the diff makes them substantively worse.
 
 ## Transition
 
-After opening the PRs: if the plan's `repos:` list has **2+ entries**, invoke `memento-8b-cross-pr-review` to check the contract between them first; a single-repo plan goes straight to `memento-9-receiving-review`.
+After opening the PRs: if the plan's `repos:` list has **2+ entries**, invoke `memento-8b-cross-pr-review` to check the contract between them first — the summary must describe the post-contract-fix state. A single-repo plan goes straight to `memento-8c-work-summary`, which emits the shareable summary and hands on to `memento-9-receiving-review`.
 
 On review feedback from humans on the PR, invoke `memento-9-receiving-review`.
 
