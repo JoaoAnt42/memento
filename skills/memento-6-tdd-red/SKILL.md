@@ -13,11 +13,12 @@ Each task is tagged `[repo: <label>]`. Run its test-writer and verifier in that 
 
 ## Protocol
 
-1. For each task, dispatch a **test-writer subagent** (**`model: sonnet`**) on the feature branch. Brief: write **1 happy-path + 1 edge-case test** (not two happy paths). No implementation. Sonnet is enough — pattern work from a structured spec. **When the plan has a `## Data contract`,** brief the writer with the seam(s) this task implements — the happy-path test asserts on the data crossing that boundary (the declared signature), so the red test *is* the contract. This re-aims the existing happy test; it never adds a third.
+1. For each task, dispatch a **test-writer subagent** (**`model: sonnet`**) on the feature branch. Brief: write **1 happy-path + 1 edge-case test** (not two happy paths). No implementation. Sonnet is enough — pattern work from a structured spec. **When the plan has a `## Data contract`,** brief the writer with the seam(s) this task implements — the happy-path test asserts on the data crossing that boundary (the declared signature), so the red test *is* the contract. This re-aims the existing happy test; it never adds a third. **When the plan has a `## Diagnosis`,** brief the writer with its `Mechanism` as the confirmed cause — `Verification` is a repro command, not a test, and does not count toward the 2-test budget; ignore `Refuted:` entries.
 2. When the test-writer returns, dispatch a **separate verifier subagent** (`model: haiku`) to run the tests and confirm they fail for the right reason (not syntax error, not missing import — actual assertion failure). Verifier is mechanical; Haiku is correct.
-3. On confirmed red, commit with `test: red for <task-slug>` and record the SHA in the plan file under that task.
-4. If tests pass immediately (false red), or fail for the wrong reason, the verifier returns that to the main agent — do NOT proceed. Loop: test-writer fixes, verifier re-checks.
-5. When all tasks have a red SHA, set `status: implementing`.
+3. Before committing, `grep -rn '\[DEBUG-' .` in the worktree must return nothing — step 5's instrumentation is its own to clean, and a probe committed into the red SHA becomes unremovable once step 7 freezes the test paths. Any hit: stop, clean, re-verify.
+4. On confirmed red, commit with `test: red for <task-slug>` and record the SHA in the plan file under that task.
+5. If tests pass immediately (false red), or fail for the wrong reason, the verifier returns that to the main agent — do NOT proceed. Loop: test-writer fixes, verifier re-checks.
+6. When all tasks have a red SHA, set `status: implementing`.
 
 ## Rules
 

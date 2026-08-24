@@ -43,6 +43,9 @@ Pin the **seams**, not the internal steps. For each boundary the work crosses:
 
 Anything not listed here is **out of contract**: the implementer may not introduce a new module, layer, or path without amending this section first.
 
+## Diagnosis   <!-- fix/perf only. Step 2 writes at most `Verification:`, and only for a repro it actually ran. Never write `Mechanism:` — memento-5-diagnosing owns the cause. -->
+Verification: `<one-shot command you ran>` → <observed red output, redacted>
+
 ## Tasks
 - [ ] T1 [repo: <label>] [disjoint]: ...
 - [ ] T2 [repo: <label>] [disjoint]: ...
@@ -74,7 +77,7 @@ Emit the sections below, then **fold the result back into the plan**: the contai
 - **Ask in plain numbered markdown — never an option-picker widget.** The question, then a numbered list, recommendation marked. The user replies with a number. A picker needs interactive key navigation, so it deadlocks any session driven over a pipe or a `send` command (see `memento-0-using` step 0d) and can't be answered from a phone or a log. Text is answerable from anywhere. Unattended, the same numbered options go into `## Decisions taken unilaterally` instead of into a question.
 - **Order questions by blast radius.** Ask the decisions that constrain later decisions first (architecture > scope > interface > implementation detail). A later answer should never invalidate an earlier one.
 - **Self-research first.** Spawn Agent(Explore) against the codebase. Read relevant code. Never ask what you can discover.
-- **Confidence + falsifier on load-bearing claims.** Tag every research finding scope rests on with confidence (high / medium / low), a falsifier, and its source. A claim below HIGH goes in `## Open risks` with its falsifier. A *domain or business-rule* claim below HIGH is not a risk to note — it is a **blocking confirmation**: flag it in `## Open risks` as `BLOCKING — confirm with team leader` and resolve it before the plan leaves planning. (Planning does its own research — re-apply this gate here even if brainstorming already cleared a claim.)
+- **Confidence + falsifier on load-bearing claims.** Tag every research finding scope rests on with confidence (high / medium / low), a falsifier, and its source (tier list in `memento-1-brainstorming`). A claim below HIGH goes in `## Open risks` with its falsifier. A *domain or business-rule* claim below HIGH is not a risk to note — it is a **blocking confirmation**: flag it in `## Open risks` as `BLOCKING — confirm with team leader` and resolve it before the plan leaves planning. (Planning does its own research — re-apply this gate here even if brainstorming already cleared a claim.)
 - **Design seed is optional and gated.** Only for new systems or multi-seam plans (see [Design seed](#design-seed-optional--new-system--large-plans-only)). Its C4 boundaries seed `## Data contract`; its unconfirmed security or domain items seed `## Open risks` under the same confidence gate. Never run it for small single-seam features.
 - **Checkpoint, don't churn.** During questioning the live conversation is the working record; write the plan file **once, at convergence** — a single write carrying the full frontmatter + all resolved `Decisions`. Never write the file per question. Accepted tradeoff: if a session dies mid-questioning the in-progress plan survives only in conversation context — acceptable because questioning is synchronous and interactive. The operational frontmatter (`repos:`, `status:`) rides in that convergence write and every later boundary write, so it is always the durable part.
 - **Append, don't overwrite.** Each subsequent step (auto-review, implementation notes, review outcomes) appends a section.
