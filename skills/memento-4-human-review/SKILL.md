@@ -32,7 +32,12 @@ WT="$ROOT/<plan-slug>"
 # Reuse if branch + worktree already exist; otherwise create the branch from BASE.
 git -C "$REPO" worktree add "$WT" -b "$BRANCH" "$BASE" 2>/dev/null \
   || git -C "$REPO" worktree add "$WT" "$BRANCH"
+# Local memory is gitignored, so it does NOT follow the worktree — relink it.
+# No-op where the helper isn't installed.
+[ -f ~/.claude/local/link.sh ] && sh ~/.claude/local/link.sh "$WT" || true
 ```
+
+A worktree starts without the repo's `CLAUDE.local.md` — gitignored files don't come along. The relink above restores it so steps 6–9 see the same local context as the main checkout.
 
 Record each worktree path back into its `repos:` entry as `worktree: <abs-path>`. Subsequent steps (6, 7, 7b, 8, 9) do **not** share one cwd — each task is tagged `[repo: <label>]`, and its agent runs in that repo's worktree.
 
