@@ -104,7 +104,7 @@ A Small task still produces a plan file and a PR — it just skips brainstorm, p
 - **Write a minimal plan file** at `~/Documents/be_JLA/work/plans/<repo>/YYYY-MM-DD-<slug>.md`, `<repo>` being `basename` of the target repo root (create the subfolder if absent) — frontmatter (`name`, `status: implementing`, `created`, `type`, `needs_human_smoke: false`, and a one-element `repos:` list — `label: repo`, `path` = the target repo root, `base` = its integration branch, `branch: <type>/<slug>`, empty `worktree:`) plus a short `## Context` paragraph. No Decisions / Tasks / Open-risks sections. This file is what `memento-8` reads the worktree from; it is deleted at merge (step 9), so it is a coordination artifact for the cycle, not an archive.
 - **Create the worktree.** Run the **Safe-prune sweep** and **Worktree creation** procedures exactly as documented in `memento-4-human-review` — the shell procedure there is generic; ignore its "on approve" framing, do not restate it here. Record the worktree path back into the `repos:` entry's `worktree:`.
 - **Implement directly** — normal editing, no agent dispatch, no red-SHA hand-off. Honour CLAUDE.md TDD where it fits, but no `memento-6` / `memento-7` ceremony.
-- Invoke `memento-8-final-review` — parallel reviewers + Orchestrator reconciliation, opens the PR, sets `status: in-review`. Step 9 deletes the plan when the PR merges.
+- Invoke `memento-8-final-review` — parallel reviewers + Orchestrator reconciliation, opens the PR, sets `status: in-review`. It hands on to `memento-8c-work-summary` for the shareable summary. Step 9 deletes the plan when the PR merges.
 
 If the task turns out larger than it looked, stop and restart it as Large.
 
@@ -120,6 +120,7 @@ If the task turns out larger than it looked, stop and restart it as Large.
 7.5. `memento-7b-human-smoke` — **optional**, gated by plan flag `needs_human_smoke: true`. Start services, hand user a click-checklist, wait for verdict. Loops back on found-issue.
 8. `memento-8-final-review` — parallel reviewers (Bugs, CRAP, Simplifier, Devil's Advocate, Tests) + Orchestrator reconciliation. Precedence: Bugs > CRAP > Simplifier > Devil's Advocate > Tests
 8.5. `memento-8b-cross-pr-review` — **optional**, multi-repo only (`repos:` ≥2). Checks the contract between the per-repo PRs (API/type/event/migration coherence); applies fixes in the worktrees and pushes. Skipped for single-repo plans.
+8.6. `memento-8c-work-summary` — emits the shareable summary (issue URL + PR URL, what the work was for, review request) once the PRs are open. Never skipped, never asked for.
 9. `memento-9-receiving-review` — consume review feedback with technical rigor, not performative agreement
 
 ## Rules

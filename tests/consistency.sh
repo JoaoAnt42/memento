@@ -19,7 +19,7 @@ fail() {
 missing=""
 for f in skills/*/SKILL.md; do
   [ -f "$f" ] || continue
-  for tok in $(grep -oE 'memento-[0-9]+b?-[a-z]+(-[a-z]+)*' "$f" | sort -u); do
+  for tok in $(grep -oE 'memento-[0-9]+[a-z]?-[a-z]+(-[a-z]+)*' "$f" | sort -u); do
     if [ ! -d "skills/$tok" ]; then
       missing="$missing $tok(from $f)"
     fi

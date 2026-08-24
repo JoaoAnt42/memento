@@ -9,7 +9,7 @@ Step 8 reviews each repo's PR in isolation. Nothing yet checks whether the per-r
 
 ## Gate
 
-Run this step only when the plan's `repos:` list has **2 or more entries** (a multi-repo plan, one PR per repo). A single-repo plan has no cross-PR contract — skip straight to `memento-9-receiving-review`.
+Run this step only when the plan's `repos:` list has **2 or more entries** (a multi-repo plan, one PR per repo). A single-repo plan has no cross-PR contract — skip straight to `memento-8c-work-summary`.
 
 ## Protocol
 
@@ -22,7 +22,7 @@ Run this step only when the plan's `repos:` list has **2 or more entries** (a mu
    - Auth/permission boundaries one side assumes the other enforces
    - Feature-flag coherence
 
-   Present the inferred connection + surface to the user and **wait for confirmation or correction**. If genuinely unrelated, skip to step 9.
+   Present the inferred connection + surface to the user and **wait for confirmation or correction**. If genuinely unrelated, skip to step 8c.
 3. Dispatch **one independent contract agent** (**`model: opus`**, not the implementer, not a step-8 reviewer), given all PR diffs together + the confirmed surface. It returns **mismatches only**, each naming the repo/PR where the fix belongs (prefer the consumer side), with severity and a concrete fix:
    - API contract mismatch — casing, missing field, status-code handling
    - Type/enum drift between repos
@@ -45,4 +45,4 @@ Run this step only when the plan's `repos:` list has **2 or more entries** (a mu
 
 ## Transition
 
-Done (or unrelated / no findings) → `memento-9-receiving-review`.
+Done (or unrelated / no findings) → `memento-8c-work-summary`, which emits one summary covering every repo's PR and hands on to `memento-9-receiving-review`. On a step-9 re-run the summary is not re-emitted — it is a first-open announcement.

@@ -140,6 +140,111 @@ else
   pass workbench-reference-removed
 fi
 
+summary_skill=skills/memento-8c-work-summary/SKILL.md
+
+if [ -f "$summary_skill" ] && grep -qE '^name: memento-8c-work-summary$' "$summary_skill"; then
+  pass work-summary-skill-exists
+else
+  fail work-summary-skill-exists "$summary_skill to exist with frontmatter 'name: memento-8c-work-summary'"
+fi
+
+if [ -f "$summary_skill" ] \
+  && grep -q 'full issue URL' "$summary_skill" \
+  && grep -q 'full PR URL' "$summary_skill" \
+  && grep -q 'Please review when possible' "$summary_skill" \
+  && grep -qF 'never `#1234`' "$summary_skill"; then
+  pass work-summary-carries-output-contract
+else
+  fail work-summary-carries-output-contract "$summary_skill to spell out the summary block — full issue URL, full PR URL, review request — and the full-URLs-never-#1234 rule behind it"
+fi
+
+if [ -f "$summary_skill" ] && grep -q 'unprompted' "$summary_skill" \
+  && grep -q 'never close out by asking the user whether they want one' skills/memento-8-final-review/SKILL.md; then
+  pass work-summary-is-emitted-unprompted
+else
+  fail work-summary-is-emitted-unprompted "the summary to be documented as emitted unprompted in $summary_skill and in skills/memento-8-final-review/SKILL.md"
+fi
+
+if [ -f "$summary_skill" ] && grep -q 'Once per PR' "$summary_skill" \
+  && grep -q 'not re-emitted' skills/memento-8-final-review/SKILL.md; then
+  pass work-summary-not-re-emitted-on-step-9-loopback
+else
+  fail work-summary-not-re-emitted-on-step-9-loopback "$summary_skill and skills/memento-8-final-review/SKILL.md to state the summary is emitted once per PR, not on each step-9 re-review round"
+fi
+
+if [ -f "$summary_skill" ] && grep -q 'not a blocker' "$summary_skill"; then
+  pass work-summary-never-blocks-on-a-missing-issue
+else
+  fail work-summary-never-blocks-on-a-missing-issue "$summary_skill to treat a PR with no linked issue as non-blocking — an unattended session has nobody to answer"
+fi
+
+if [ -f "$summary_skill" ] \
+  && grep -q 'statusCheckRollup' "$summary_skill" \
+  && grep -q 'do not emit the block' "$summary_skill"; then
+  pass work-summary-withholds-on-red-ci
+else
+  fail work-summary-withholds-on-red-ci "$summary_skill to check PR state before emitting and withhold the block on failing checks or a draft PR"
+fi
+
+if [ -f skills/memento-8-final-review/SKILL.md ]; then
+  final_review_transition=$(sed -n '/^## Transition/,/^## /p' skills/memento-8-final-review/SKILL.md)
+else
+  final_review_transition=""
+fi
+if printf '%s' "$final_review_transition" | grep -q 'memento-8c-work-summary'; then
+  pass final-review-transition-hands-off-to-work-summary
+else
+  fail final-review-transition-hands-off-to-work-summary "skills/memento-8-final-review/SKILL.md '## Transition' section to route a single-repo plan to memento-8c-work-summary"
+fi
+
+if [ -f skills/memento-8b-cross-pr-review/SKILL.md ]; then
+  cross_pr_transition=$(sed -n '/^## Transition/,/^## /p' skills/memento-8b-cross-pr-review/SKILL.md)
+  cross_pr_gate=$(sed -n '/^## Gate/,/^## /p' skills/memento-8b-cross-pr-review/SKILL.md)
+else
+  cross_pr_transition=""
+  cross_pr_gate=""
+fi
+if printf '%s' "$cross_pr_transition" | grep -q 'memento-8c-work-summary'; then
+  pass cross-pr-review-transition-hands-off-to-work-summary
+else
+  fail cross-pr-review-transition-hands-off-to-work-summary "skills/memento-8b-cross-pr-review/SKILL.md '## Transition' section to route on to memento-8c-work-summary"
+fi
+
+if printf '%s' "$cross_pr_gate" | grep -q 'memento-9-receiving-review'; then
+  fail cross-pr-gate-does-not-bypass-work-summary "skills/memento-8b-cross-pr-review/SKILL.md '## Gate' to send a single-repo plan to memento-8c-work-summary, not past it to step 9"
+else
+  pass cross-pr-gate-does-not-bypass-work-summary
+fi
+
+if [ -f "$summary_skill" ]; then
+  summary_transition=$(sed -n '/^## Transition/,/^## /p' "$summary_skill")
+else
+  summary_transition=""
+fi
+if printf '%s' "$summary_transition" | grep -q 'memento-9-receiving-review'; then
+  pass work-summary-transition-hands-off-to-step-9
+else
+  fail work-summary-transition-hands-off-to-step-9 "$summary_skill '## Transition' section to hand on to memento-9-receiving-review"
+fi
+
+if [ -f skills/memento-0-using/SKILL.md ]; then
+  using_small_route_section=$(sed -n '/^### Small route/,/^### /p' skills/memento-0-using/SKILL.md)
+else
+  using_small_route_section=""
+fi
+if printf '%s' "$using_route_section" | grep -q 'memento-8c-work-summary' \
+  && printf '%s' "$using_small_route_section" | grep -q 'memento-8c-work-summary'; then
+  pass using-both-routes-list-work-summary
+else
+  fail using-both-routes-list-work-summary "skills/memento-0-using/SKILL.md Small-route and Large-route step lists to both name memento-8c-work-summary"
+fi
+
+if [ -f README.md ] && grep -qE '^\| *8\.6 *\|.*memento-8c-work-summary' README.md; then
+  pass readme-step-table-has-work-summary-row
+else
+  fail readme-step-table-has-work-summary-row "README.md step table to have a row for step 8.6 naming memento-8c-work-summary"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else
