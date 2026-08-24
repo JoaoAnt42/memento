@@ -43,9 +43,8 @@ Pin the **seams**, not the internal steps. For each boundary the work crosses:
 
 Anything not listed here is **out of contract**: the implementer may not introduce a new module, layer, or path without amending this section first.
 
-## Diagnosis   <!-- written by memento-5-diagnosing; omit for non-fix/perf plans -->
-Mechanism: <confirmed cause>, `path/to/file.ts:214`
-Verification: `<one-shot command>` → <observed red output, redacted>
+## Diagnosis   <!-- fix/perf only. Step 2 writes at most `Verification:`, and only for a repro it actually ran. Never write `Mechanism:` — memento-5-diagnosing owns the cause. -->
+Verification: `<one-shot command you ran>` → <observed red output, redacted>
 
 ## Tasks
 - [ ] T1 [repo: <label>] [disjoint]: ...

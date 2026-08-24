@@ -7,43 +7,51 @@ description: Step 5 of Memento. Use when human review approves a plan whose `typ
 
 Find the cause before anyone writes a test against the symptom. Output is a confirmed mechanism plus one command that goes red on it.
 
-**Entry.** Every `fix` / `perf` plan enters this step. It exits immediately — at protocol 1 — only when the plan already carries a recorded command that the verifier re-runs and observes go red. The skip is machine-checked, never self-asserted: `swr-fetcher-key-pairing` self-reported "reproduced in a harness" when it had not been, and grew from 2 hooks to 57 files on that claim. Claim-source tags (`reproduced observation` vs `code read` / `inference`, `memento-1-brainstorming:39`) are a prompt for what to verify first, not the gate.
+**Entry.** Every `fix` / `perf` plan enters this step — it is not skippable by judgement. It exits at protocol 1 only when the plan already carries a `Verification:` command **and** a falsifiable prediction, and the verifier confirms both. The skip is machine-checked, never self-asserted.
 
-Run in the plan's `worktree:` — this step mutates files.
+Step 2 may pre-seed `Verification:` when the author actually ran a repro (the `reproduced observation` tier, `memento-1-brainstorming:39`). Step 2 never writes `Mechanism:` — a cause is only ever written here, after verification.
+
+Run in the plan's `worktree:` — this step mutates files. It assumes **one repo, one cause**; a multi-repo plan whose symptom may have several causes needs human confirmation before proceeding.
 
 ## Protocol
 
-1. Plan names a command → dispatch the verifier (4) on it. Red for the stated reason → write `## Diagnosis` from what it observed and transition. Anything else → continue.
+1. Plan carries `Verification:` + a prediction → dispatch the verifier (4). Confirmed → write `Mechanism:` from what it observed and transition. Anything else → continue.
 
-2. **Loop, reproduce, minimise.** Build a tight pass/fail signal that goes red on *this* bug, in roughly this order: failing test at whatever seam reaches the bug; curl/HTTP script against a dev server; CLI invocation diffed against a known-good snapshot; headless browser script asserting DOM/console/network; replay of a captured trace; throwaway harness over a minimal subset; property/fuzz loop for "sometimes wrong"; bisection harness across two known states; differential loop across two versions or configs. Then **tighten** it — faster, sharper assertion (the user's exact symptom, not "didn't crash"), more deterministic (pin time, seed RNG, isolate fs, freeze network). Non-deterministic bugs: the goal is a **higher reproduction rate**, not a clean repro — loop the trigger, parallelise, add stress, inject sleeps, until it is debuggable. Run it, watch it go red on the failure mode the *user* described, then minimise: cut inputs, callers, config and steps one at a time, re-running after each cut, until every remaining element is load-bearing.
+2. **Loop, reproduce, minimise.** Build a tight pass/fail signal that goes red on *this* bug — test, HTTP script, CLI diff against a known-good snapshot, headless browser assertion, replayed trace, throwaway harness, fuzz loop, bisection, whatever reaches it fastest. Then **tighten**: faster, sharper assertion (the user's exact symptom, not "didn't crash"), more deterministic (pin time, seed RNG, isolate fs, freeze network). Non-deterministic bugs: the goal is a **higher reproduction rate**, not a clean repro — loop the trigger, parallelise, add stress, inject sleeps, until it is debuggable. For `perf`, red means **a measured budget breached** — establish the baseline first, then assert against it; a timing number with no threshold is not a signal. Run it, watch it go red on the failure mode the *user* described, then minimise: cut inputs, callers, config and steps one at a time, re-running after each cut, until every remaining element is load-bearing.
 
-   Done when you can name **one command**, already run at least once (invocation and output shown, redacted), that is red-capable, deterministic, fast, and agent-runnable. **No red-capable command, no hypotheses** — jumping to a theory is the exact failure this step prevents. If you genuinely cannot build one, stop and say so: what you tried, plus a request for environment access, a redacted captured artifact, or permission to instrument.
+   Done when you can name **one command**, already run at least once (invocation and output shown, redacted), that is red-capable, deterministic, fast, and agent-runnable. **No red-capable command, no hypotheses** — jumping to a theory is the exact failure this step prevents.
 
 3. **Hypothesise, then instrument.** Generate **3–5 ranked hypotheses before testing any of them**, each falsifiable and stating its prediction ("if X is the cause, changing Y makes the bug disappear"). No prediction → it is a vibe; sharpen or discard. Show the ranked list to the user — **non-blocking**, proceed on your own ranking if they are AFK. Then instrument **one variable at a time**, every probe mapped to a specific prediction: debugger/REPL over targeted boundary logs, never "log everything and grep". Tag every debug log `[DEBUG-<hash>]` so cleanup is one grep. Perf regressions: baseline measurement first (timing harness, profiler, query plan), then bisect — logs are the wrong instrument there.
 
-4. Dispatch an independent **verifier subagent** (`model: haiku`) to run the recorded command cold and confirm it goes red **for the stated reason** — not a syntax error, not a missing import. Mechanical role; Haiku is correct. This is the only control in the cycle a false "reproduced" claim cannot survive.
+4. Dispatch an independent **verifier subagent** (`model: haiku`) to run the recorded command cold. It confirms the command goes red for real — not a syntax error, not a missing import — **and** that the claimed mechanism's prediction holds: patching or reverting the named `file:line` turns it green, or the red output names the claimed frame, query or value. A red command with an unchecked mechanism is not a diagnosis. Mechanical role; Haiku is correct.
 
-5. Cause confirmed → append to the plan, exactly two fields:
+5. **Clean the worktree — both outcomes, before any transition.** Remove every `[DEBUG-…]` probe and throwaway harness. Step 4 reuses an existing `worktree:` rather than recreating it, and step 6 commits whatever is in the tree, so an uncleaned tree either ships debug code or makes local green disagree with CI.
+
+6. Write the plan's `## Diagnosis` — **replace or create, never append.** The plan must contain exactly one:
 
 ```markdown
 ## Diagnosis
 
 Mechanism: <confirmed cause>, `path/to/file.ts:214`
 Verification: `<one-shot command>` → <observed red output, redacted>
+Refuted: <theory> — <what falsified it>
 ```
-
-6. Cause refuted → append the refuted theory and the real finding to `## Diagnosis`, mark invalidated tasks **individually**, clean the worktree, set `status: planning`, loop to `memento-2-planning` (which re-runs 3 and 4).
 
 ## Rules
 
 - **The loop is the skill.** Everything after it is mechanical. Spend disproportionate effort there. Be aggressive, be creative, refuse to give up.
-- **One-shot, not watch loop.** The recorded command must exit and be rerunnable. `wpy` / `wts` / `wcs` (`~/.zshrc:146-149`, `watchexec … --clear -- <runner>`, blocking until Ctrl-C) are the human's companion while iterating and can never be the recorded command — they never exit. `wts` runs `yarn check-types`, not `tsc`.
+- **One-shot, not watch loop.** The recorded command must exit and be rerunnable. A watch-mode wrapper that blocks until interrupted can never be the recorded command.
 - **The diagnosing agent writes no test.** `Verification` is a repro command, not a regression test. Step 6 reads `Mechanism` into the test-writer's brief and still produces 1 happy + 1 edge.
-- **Refutation is usually partial.** `citations-sort-page-remount` refuted its fix theory while its coverage-gap test stayed valid and shipped. Invalidate the tasks the finding actually touches; leave the rest.
-- **Clean before looping back.** Remove every `[DEBUG-…]` probe and throwaway harness. Step 4 reuses an existing `worktree:` rather than recreating it, so an uncleaned tree contaminates the retry.
+- **Refutation is usually partial.** Invalidate the tasks the finding actually touches; leave the rest.
+- **Second refutation on the same plan → stop and escalate.** A theory refuted twice means the premise is wrong, not the theory. Hand back and recommend `reject` to `memento-1-brainstorming` rather than another lap.
 - **Redact every secret** in any command or output shown — `<REDACTED>` in its place, loops built against env vars. If the redacted output is not enough to diagnose, say so and ask.
-- **No fourth human gate.** The hypothesis checkpoint is non-blocking, so this step runs unattended end to end.
+- **No fourth human gate.** The hypothesis checkpoint is non-blocking. An unattended run never reaches this step — it hard-stops at the step-4 verdict.
 
 ## Transition
 
-Confirmed → `status: tdd-red`, invoke `memento-6-tdd-red`. Refuted → `status: planning`, invoke `memento-2-planning`.
+Clean the worktree first (protocol 5), then:
+
+- **Cause confirmed** → `status: tdd-red`, invoke `memento-6-tdd-red`.
+- **Cause refuted** → record the real finding under `Refuted:`, mark invalidated tasks individually, `status: planning`, invoke `memento-2-planning`.
+- **No reproducible symptom** — a corrective `fix` with a known cause and nothing to reproduce (a guard spotted in review, a typo) → `Verification: none — <one-line why>`, `status: tdd-red`, invoke `memento-6-tdd-red`.
+- **Repro blocked** — needs environment access, a captured artifact, or permission to instrument → `status: human-review`, hand back what you tried and what you need. Stop.

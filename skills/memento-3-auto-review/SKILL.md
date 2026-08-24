@@ -20,7 +20,7 @@ Three subagents debate the plan. **The Orchestrator rewrites the plan file in pl
 3. Orchestrator reconciles. **If a proposal contradicts a resolved user decision, Orchestrator pushes back** — cites the decision, the user's stated reason, and asks the proposing agent to revise or justify with new information the user didn't have. Never silently flip a resolved answer.
 4. If the critiques conflict with each other (not with user), send them back to each other via Orchestrator for round 2.
 5. **Round cap: 3.** Orchestrator may exit earlier on convergence.
-6. Orchestrator **rewrites the plan in place** — REPLACE the affected sections, do not append duplicates. After the rewrite, the plan must contain exactly one `## Tasks`, one `## Open risks`, and — if the plan has one — one `## Data contract`. Then append a single short `## Auto-review changes` section listing only:
+6. Orchestrator **rewrites the plan in place** — REPLACE the affected sections, do not append duplicates. After the rewrite, the plan must contain exactly one `## Tasks`, one `## Open risks`, and — if the plan has them — one `## Data contract` and one `## Diagnosis`. Then append a single short `## Auto-review changes` section listing only:
    - Concrete changes made (one bullet each, no rationale tree).
    - Items surfaced for human override (proposals that contradicted a resolved user decision).
 
