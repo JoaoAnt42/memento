@@ -23,7 +23,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
 5. Present consolidated review to the user. For non-trivial changes, **pause for user confirmation before applying**.
-6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`.
+6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`. When the task came from an issue, link it (`Closes #N` in the body) — step 8.6's summary carries that link, and nothing else in the cycle creates it.
 7. **Write the decision record into the PR body — not into the plan.** Cover only:
    - What changed and why (one bullet per non-obvious decision).
    - What was deliberately *not* done, and why. The reviewer's first question is always "why didn't you also fix X, two lines away?" — answer it before they ask.
@@ -46,6 +46,8 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 ## Transition
 
 After opening the PRs: if the plan's `repos:` list has **2+ entries**, invoke `memento-8b-cross-pr-review` to check the contract between them first — the summary must describe the post-contract-fix state. A single-repo plan goes straight to `memento-8c-work-summary`, which emits the shareable summary and hands on to `memento-9-receiving-review`.
+
+**Re-invoked from step 9**, against PRs that are already open: the summary is not re-emitted. It announces a PR becoming reviewable, not each round of changes on it — go back to `memento-9-receiving-review` when the re-review is green.
 
 On review feedback from humans on the PR, invoke `memento-9-receiving-review`.
 

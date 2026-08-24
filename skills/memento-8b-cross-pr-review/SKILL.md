@@ -9,7 +9,7 @@ Step 8 reviews each repo's PR in isolation. Nothing yet checks whether the per-r
 
 ## Gate
 
-Run this step only when the plan's `repos:` list has **2 or more entries** (a multi-repo plan, one PR per repo). A single-repo plan has no cross-PR contract — skip straight to `memento-9-receiving-review`.
+Run this step only when the plan's `repos:` list has **2 or more entries** (a multi-repo plan, one PR per repo). A single-repo plan has no cross-PR contract — skip straight to `memento-8c-work-summary`.
 
 ## Protocol
 
@@ -45,4 +45,4 @@ Run this step only when the plan's `repos:` list has **2 or more entries** (a mu
 
 ## Transition
 
-Done (or unrelated / no findings) → `memento-8c-work-summary`, which emits one summary covering every repo's PR and hands on to `memento-9-receiving-review`.
+Done (or unrelated / no findings) → `memento-8c-work-summary`, which emits one summary covering every repo's PR and hands on to `memento-9-receiving-review`. On a step-9 re-run the summary is not re-emitted — it is a first-open announcement.
