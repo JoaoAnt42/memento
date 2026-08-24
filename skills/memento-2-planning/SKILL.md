@@ -5,7 +5,7 @@ description: Step 2 of Memento. Use after brainstorming converges, to write a du
 
 # Memento — Planning
 
-Write the plan **once, at convergence** (see [Checkpoint, don't churn](#rules)) to `~/Documents/be_JLA/work/plans/YYYY-MM-DD-<slug>.md`. Never into the repo.
+Write the plan **once, at convergence** (see [Checkpoint, don't churn](#rules)) to `~/Documents/be_JLA/work/plans/<repo>/YYYY-MM-DD-<slug>.md`, where `<repo>` is `basename` of the **first** `repos:` entry's `path` (a multi-repo plan lives under its first entry only). Create the subfolder if it doesn't exist. Never into the repo.
 
 ## Plan file structure
 
@@ -58,7 +58,7 @@ Anything not listed here is **out of contract**: the implementer may not introdu
 
 For a **new service, system, or any multi-seam plan**, optionally produce a C4 design document *before* filling `## Data contract`. Skip it for small single-seam features — it's overkill there. Adapted from Fabric's `create_design_document` (C4 model).
 
-Emit the sections below, then **fold the result back into the plan**: the container/component boundaries become `## Data contract` seams; unconfirmed security controls or domain rules become `## Open risks` (BLOCKING-tagged per the confidence gate). It is a *seed*, not a deliverable — it lives inline in the plan, or in a sibling `YYYY-MM-DD-<slug>-design.md` in the same plans dir, and is not re-litigated downstream.
+Emit the sections below, then **fold the result back into the plan**: the container/component boundaries become `## Data contract` seams; unconfirmed security controls or domain rules become `## Open risks` (BLOCKING-tagged per the confidence gate). It is a *seed*, not a deliverable — it lives inline in the plan, or in a sibling `YYYY-MM-DD-<slug>-design.md` in the plan's own `<repo>/` subfolder, and is not re-litigated downstream.
 
 - **Business posture** — priorities, goals, and the top business risks the system addresses.
 - **Security posture** — existing controls (prefix each `security control`), `accepted risk`s, recommended high-priority controls not yet present, and security requirements.
