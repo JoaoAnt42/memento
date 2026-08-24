@@ -85,6 +85,7 @@ Memento's default shape assumes a human is present: it asks questions, waits for
 - **Questions (1–2)** — do not ask. Still do the work: generate the 4 options, pick one, state why. Record every such pick in the plan under `## Decisions taken unilaterally` (question, options, choice, reasoning, and what would falsify it). That section is the review surface the questions would have been.
 - **Verdict (step 4)** — **hard stop.** Run 0a→3, write the plan, set `status: auto-review`, and hand back with the plan path plus the unilateral-decisions list. Never self-approve, never create worktrees, never proceed to step 6. The human approves later from their own session.
 - **Smoke (step 7b)** — when `needs_human_smoke: true`, stop at `status: smoke` and hand back the checklist rather than skipping it or declaring it passed.
+- **Hypotheses (step 5)** — not a fourth gate. `memento-5-diagnosing`'s ranked-hypothesis checkpoint is non-blocking, so the step runs unattended end to end.
 
 **Small route runs unattended end to end** — it has no question loop and no verdict gate, and it terminates at a PR, which is itself the review surface. Large stops at the step-4 gate.
 
@@ -112,6 +113,7 @@ If the task turns out larger than it looked, stop and restart it as Large.
 2. `memento-2-planning` — write plan markdown in Obsidian, propose-4-options on every question
 3. `memento-3-auto-review` — Devil's Advocate + Simplifier + Orchestrator discussion, Orchestrator rewrites the plan
 4. `memento-4-human-review` — submit plan to user; rejection → back to step 2. On approve, safe-prune merged worktrees, then create one **git worktree per `repos:` entry** (each forked from its `base`, on its `branch`). Each later task runs in its tagged repo's worktree.
+5. `memento-5-diagnosing` — **optional**, `fix` / `perf` plans only. Reproduce and minimise the bug, rank hypotheses, instrument, record a machine-verified cause for step 6. Refutation loops back to step 2.
 6. `memento-6-tdd-red` — test-writer agents produce red tests (1 happy + 1 edge per task), **commit the red SHA**
 7. `memento-7-implementing` — independent impl agents, input = red SHA, confirm green
 7.5. `memento-7b-human-smoke` — **optional**, gated by plan flag `needs_human_smoke: true`. Start services, hand user a click-checklist, wait for verdict. Loops back on found-issue.

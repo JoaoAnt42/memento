@@ -14,7 +14,7 @@ Submit the updated plan to the user. Wait for verdict.
 1. Summarize the plan in ≤10 bullets (title, task list, top 3 decisions, top 3 risks). Link the plan file path.
 2. Ask for verdict: **approve / revise / reject**.
 3. Responses:
-   - **approve** → run the **safe-prune sweep** (below), then create the worktrees — one per `repos:` entry. Set `status: tdd-red`, invoke `memento-6-tdd-red`.
+   - **approve** → run the **safe-prune sweep** (below), then create the worktrees — one per `repos:` entry. `type:` `fix` or `perf` → set `status: diagnosing`, invoke `memento-5-diagnosing`; any other type → `status: tdd-red`, invoke `memento-6-tdd-red`.
    - **revise** → capture requested changes, set `status: planning`, invoke `memento-2-planning` to amend.
    - **reject** → set `status: planning`, loop back to `memento-1-brainstorming` (premise is wrong).
 
