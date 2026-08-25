@@ -27,14 +27,16 @@ mention — when `~/Documents/be_JLA/scripts/work_summary_note.py` is absent; th
 this plugin's author and every other user simply gets the printed block.
 
 ```sh
-NOTE=~/Documents/be_JLA/scripts/work_summary_note.py
-[ -f "$NOTE" ] && python3 "$NOTE" --url <full issue URL, or the PR URL when no issue is linked> <<'PROSE'
+[ -f ~/Documents/be_JLA/scripts/work_summary_note.py ] &&
+python3 ~/Documents/be_JLA/scripts/work_summary_note.py --url <full issue URL, or the PR URL when no issue is linked> <<'PROSE'
 <the same 1-2 lines that go in the block body>
 PROSE
 ```
 
 The heredoc delimiter is quoted because a summary routinely carries backticks and `$`; unquoted, the
-shell eats them before the script sees the prose.
+shell eats them before the script sees the prose. The path is spelled out twice rather than held in a
+variable so that a caller restricting Bash by command prefix can allowlist it — `python3 "$NOTE"` is
+opaque to prefix matching.
 
 The script prints one status line: `wrote <board>`, `skipped: … already on <board>`, or a notice that
 no board is mapped for that owner (exit 3) or that the routed board is missing (exit 4). Report a
