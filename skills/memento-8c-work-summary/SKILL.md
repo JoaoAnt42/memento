@@ -11,11 +11,37 @@ Write what a teammate reads in Slack to know what landed and that it needs their
 
 **Once per PR.** The summary announces a PR becoming reviewable. A step-9 loopback that re-runs step 8 against an already-open PR does not re-emit it — the reviewer is already on the thread, so answer there instead.
 
-## Gather, then check, then emit — in that order
+## Gather, check, write, then emit — in that order
 
 1. **The PRs** — from step 8 (or 8b) when it handed them over, otherwise `gh pr view --json number,url,title,body,closingIssuesReferences` in each repo's worktree. Never guess a PR number from a branch name.
 2. **The issue** — the PR's linked reference, or `Closes #N` / `Fixes #N` in its body; full URL via `gh issue view <n> --json url`. **A missing issue link is not a blocker.** Emit the summary with the PR URL alone and note in one line that no issue is linked. Never stop to ask which issue to use and never invent one — a delegated session (step 0d) has nobody to answer, and the summary is worth more than the link.
 3. **The state** — `gh pr view <n> --json state,isDraft,reviewDecision,statusCheckRollup`, **before** emitting anything. Failing checks or a draft PR: do not emit the block at all. Say which PR is not ready and why; emit once it is green. Asking for review on red CI wastes the reviewer's time, and a summary already in the transcript cannot be recalled.
+
+4. **The board note** — write the one-liner to the routed Obsidian board (below), **before** emitting.
+   It runs only once the state check in 3 has passed, so a draft or red-CI PR never reaches a board.
+
+## The board note
+
+The summary is also one open line on the author's task board. Skip this entirely — silently, no
+mention — when `~/Documents/be_JLA/scripts/work_summary_note.py` is absent; that vault is personal to
+this plugin's author and every other user simply gets the printed block.
+
+```sh
+[ -f ~/Documents/be_JLA/scripts/work_summary_note.py ] &&
+python3 ~/Documents/be_JLA/scripts/work_summary_note.py --url <full issue URL, or the PR URL when no issue is linked> <<'PROSE'
+<the same 1-2 lines that go in the block body>
+PROSE
+```
+
+The heredoc delimiter is quoted because a summary routinely carries backticks and `$`; unquoted, the
+shell eats them before the script sees the prose. The path is spelled out twice rather than held in a
+variable so that a caller restricting Bash by command prefix can allowlist it — `python3 "$NOTE"` is
+opaque to prefix matching.
+
+The script prints one status line: `wrote <board>`, `skipped: … already on <board>`, or a notice that
+no board is mapped for that owner (exit 3) or that the routed board is missing (exit 4). Report a
+notice — those need a human to extend a map or restore a file. Never let any of it stop the block
+from being printed: the summary is the deliverable, the board line is a convenience.
 
 ## Output — the block is exactly this, nothing else
 
