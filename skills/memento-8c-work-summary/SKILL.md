@@ -43,6 +43,17 @@ no board is mapped for that owner (exit 3) or that the routed board is missing (
 notice — those need a human to extend a map or restore a file. Never let any of it stop the block
 from being printed: the summary is the deliverable, the board line is a convenience.
 
+**One or two sentences, two rendered lines at the outside.** A board is scanned, not read; a line that
+wraps into a paragraph buries the four tickets under it. Cut the mechanism, the file names, the commit
+SHAs, the measurements and the deploy history — the link reaches the PR body, which is where all of
+that already lives. Keep what changed for whoever uses the thing, and why it needed changing. If the
+line will not compress to two sentences, the summary is describing the diff instead of the outcome.
+
+**The line is opened here and ticked much later.** It stays `- [ ]` through review and merge. When the
+user says it merged, edit that line in place to `- [x]` and append `✅ <YYYY-MM-DD>`, leaving it exactly
+where it sits — `board_regroup.py` files it under its `### <day>` on the next commit. Never tick at PR
+time, and never write `✅` from `work_summary_note.py`.
+
 ## Output — the block is exactly this, nothing else
 
 ```
@@ -57,7 +68,7 @@ Multi-repo: one issue, then every PR — `<issue URL> - <PR URL> - <PR URL>` —
 
 ## Rules
 
-- **Two lines maximum** for the body, one is usually better. This is the what-and-why, not the changelog.
+- **One or two sentences** for the body, two rendered lines at the outside; one is usually better. This is the what-and-why, not the changelog. The same limit binds the board line.
 - **Say what it was for, not what was edited.** "Recommendation copy is now available via the public API and MCP" beats "added a field to mapRecommendationItem and a zod schema". The reader wants the user-visible outcome.
 - Plain sentences. No headings, no bullets, no bold, no emoji, no "Summary:" preamble.
 - Mention a second issue only when the work genuinely spans both.
