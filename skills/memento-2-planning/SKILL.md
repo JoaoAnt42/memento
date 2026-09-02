@@ -55,7 +55,9 @@ Verification: `<one-shot command you ran>` → <observed red output, redacted>
 - ...
 ```
 
-**While questioning** (live), keep the 4 options visible so the user can pick from them. **Once the user answers**, collapse the question to its one-line `Decisions` bullet above **in the conversation** (it reaches the file's `## Decisions` at convergence) and drop the option list. The unselected options are dead weight — the picked answer + reason is the load-bearing record.
+**While questioning** (live), keep the 4 options visible so the user can pick from them. **Once the user answers**, collapse the question to its one-line `Decisions` bullet above **in the conversation** (it reaches the file's `## Decisions` at convergence) and drop the option list. The unselected options are dead weight — the picked answer + reason is the load-bearing record. Exception: when the call was close, keep the runner-up and why it lost in the same bullet.
+
+`## Decisions` has a second reader. Step 8 copies it into the PR body as the `## Decisions` section, so a human who never saw this cycle can follow the reasoning without reverse-engineering the diff. Phrase each bullet's topic as the question that was actually asked, and keep the reason answerable to someone with no vault access — no `[[wikilinks]]`, no plan-internal references.
 
 ## Design seed (optional — new-system / large plans only)
 
