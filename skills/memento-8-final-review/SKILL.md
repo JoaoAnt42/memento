@@ -28,16 +28,19 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 
    ```markdown
    ## What changed
-   One bullet per non-obvious change. Skip anything the diff already makes obvious.
+   - <non-obvious change> — <why, where the diff doesn't already say it>.
 
    ## Decisions
-   **<question topic>?** <what was picked>. <why, one line.>
-   **<question topic>?** <what was picked>. <why.> Considered <alt>, rejected because <reason>.
+   - <what was picked> — <why, one line>. Considered <alt>, rejected because <reason>.
 
    ## Not done
    - <thing deliberately left alone> — <why>.
    - <deferred item> — <one-line reason> (<ticket link if one exists>).
    ```
+
+   **Cap every section at 4 bullets, each 1–2 sentences and ~30 words.** Bullets only — no paragraphs, no sub-bullets, no bold lead-ins. Past the cap, merge bullets or cut the weakest; never add a fifth. A section with nothing to say is dropped, not padded.
+
+   **Evidence goes in the issue, the conclusion goes in the body.** Write "every in-repo writer eliminated (#1400)", not the four-clause proof — same for measurements, elimination chains and repro transcripts. The body carries what a reviewer decides with; the issue carries what convinced you.
 
    **`## Decisions` is the point of the body.** Source it from the plan's `## Decisions` and `## Decisions taken unilaterally` — every question the cycle asked and how it was answered, so the reviewer reads intent instead of reverse-engineering it from the diff. Name the runner-up only where the call was close. Tag anything that came from `Decisions taken unilaterally` with `(no human confirm)`; that is where a reviewer should look hardest.
 
