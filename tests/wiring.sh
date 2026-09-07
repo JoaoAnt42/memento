@@ -151,11 +151,12 @@ fi
 if [ -f "$summary_skill" ] \
   && grep -q 'full issue URL' "$summary_skill" \
   && grep -q 'full PR URL' "$summary_skill" \
-  && grep -q 'Please review when possible' "$summary_skill" \
+  && grep -qF '<full issue URL> - <full PR URL> - <what it was done for' "$summary_skill" \
+  && ! grep -q 'Please review when possible' "$summary_skill" \
   && grep -qF 'never `#1234`' "$summary_skill"; then
   pass work-summary-carries-output-contract
 else
-  fail work-summary-carries-output-contract "$summary_skill to spell out the summary block — full issue URL, full PR URL, review request — and the full-URLs-never-#1234 rule behind it"
+  fail work-summary-carries-output-contract "$summary_skill to spell out the one-line summary block — full issue URL, full PR URL, what it was for, and no review-request line — plus the full-URLs-never-#1234 rule behind it"
 fi
 
 if [ -f "$summary_skill" ] && grep -q 'unprompted' "$summary_skill" \

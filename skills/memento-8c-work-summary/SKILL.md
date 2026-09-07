@@ -1,13 +1,13 @@
 ---
 name: memento-8c-work-summary
-description: Step 8.6 of Memento. Use once the PRs are open — from memento-8-final-review on a single-repo plan, from memento-8b-cross-pr-review on a multi-repo one. Emits the short shareable summary (issue URL - PR URL, what the work was for, review request) for Slack or standup.
+description: Step 8.6 of Memento. Use once the PRs are open — from memento-8-final-review on a single-repo plan, from memento-8b-cross-pr-review on a multi-repo one. Emits the short shareable summary — one line: issue URL - PR URL - what the work was for — for Slack or standup.
 ---
 
 # Memento — Work Summary
 
 A task is not finished when the PR opens; it is finished when someone else knows it opened. Emit this summary **unprompted** as the closing act of the cycle — the user should never have to ask for it.
 
-Write what a teammate reads in Slack to know what landed and that it needs their eyes. This is **not** the PR body: step 8 wrote the decision record there, for the reviewer already looking at the diff. This is the two-line version for someone who is not.
+Write what a teammate reads in Slack to know what landed and that it needs their eyes. This is **not** the PR body: step 8 wrote the decision record there, for the reviewer already looking at the diff. This is the one-line version for someone who is not.
 
 **Once per PR.** The summary announces a PR becoming reviewable. A step-9 loopback that re-runs step 8 against an already-open PR does not re-emit it — the reviewer is already on the thread, so answer there instead.
 
@@ -57,18 +57,20 @@ time, and never write `✅` from `work_summary_note.py`.
 ## Output — the block is exactly this, nothing else
 
 ```
-<full issue URL> - <full PR URL>
-<what it was done for, 1-2 lines>
-Please review when possible.
+<full issue URL> - <full PR URL> - <what it was done for, 1-2 sentences>
 ```
+
+**One line, nothing under it.** No review-request line, no second line — the links and the why are the
+whole summary. Whoever reads it knows a PR is open; spelling out "please review" adds a line to every
+paste and tells them nothing.
 
 Both links are **full URLs**, never `#1234` — the summary gets pasted where issue shorthand does not resolve.
 
-Multi-repo: one issue, then every PR — `<issue URL> - <PR URL> - <PR URL>` — and the body once. The work was one task; do not write one summary per PR.
+Multi-repo: one issue, then every PR, then the body — `<issue URL> - <PR URL> - <PR URL> - <body>`. The work was one task; do not write one summary per PR.
 
 ## Rules
 
-- **One or two sentences** for the body, two rendered lines at the outside; one is usually better. This is the what-and-why, not the changelog. The same limit binds the board line.
+- **One or two sentences** for the body, on the same line as the links; one is usually better. This is the what-and-why, not the changelog. The same limit binds the board line.
 - **Say what it was for, not what was edited.** "Recommendation copy is now available via the public API and MCP" beats "added a field to mapRecommendationItem and a zod schema". The reader wants the user-visible outcome.
 - Plain sentences. No headings, no bullets, no bold, no emoji, no "Summary:" preamble.
 - Mention a second issue only when the work genuinely spans both.
