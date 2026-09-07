@@ -68,7 +68,7 @@ Entry point is `memento-0-using`. Each step invokes the next skill in sequence.
 | 7.5 | `memento-7b-human-smoke` | Optional; gated by `needs_human_smoke: true` |
 | 8 | `memento-8-final-review` | Parallel reviewers, precedence: Bugs > CRAP > Simplifier > DA > Tests. Decision record goes in the PR body, not the plan |
 | 8.5 | `memento-8b-cross-pr-review` | Optional, multi-repo only (`repos:` ≥2). Cross-PR contract check; applies fixes in worktrees and pushes |
-| 8.6 | `memento-8c-work-summary` | Emits the shareable summary (issue + PR links, what it was for, review request) unprompted |
+| 8.6 | `memento-8c-work-summary` | Emits the shareable one-line summary (issue + PR links, what it was for) unprompted |
 | 9 | `memento-9-receiving-review` | Verify, push back, or implement. Loops back to step 8 on non-trivial review changes. Deletes the plan on merge (runbooks/reverts graduate out instead) |
 
 ## Requirements
