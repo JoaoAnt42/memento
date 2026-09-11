@@ -246,6 +246,69 @@ else
   fail readme-step-table-has-work-summary-row "README.md step table to have a row for step 8.6 naming memento-8c-work-summary"
 fi
 
+if [ -f skills/memento-1-brainstorming/SKILL.md ] \
+  && grep -qE '^description:.*ticket' skills/memento-1-brainstorming/SKILL.md \
+  && grep -qiE '(ticket.*(body|acceptance criteri).*read|read.*(body|acceptance criteri).*ticket)' skills/memento-1-brainstorming/SKILL.md \
+  && grep -qiE '(ticket.*premise auditor|premise auditor.*ticket)' skills/memento-1-brainstorming/SKILL.md; then
+  pass brainstorming-reads-ticket
+else
+  fail brainstorming-reads-ticket "AC1: skills/memento-1-brainstorming/SKILL.md frontmatter description to mention 'ticket', and step 1 to read the ticket's body and existing acceptance criteria before the Premise Auditor when the task names a GitHub issue or Linear ticket (co-occurring 'ticket', 'body'/'acceptance criteria', 'read', and 'Premise Auditor')"
+fi
+
+if [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qE '^## Acceptance criteria' skills/memento-2-planning/SKILL.md \
+  && grep -qF '[ticket]' skills/memento-2-planning/SKILL.md \
+  && grep -qF '[drafted]' skills/memento-2-planning/SKILL.md \
+  && grep -qF '[re-scoped:' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(write-ticket.*unhappy path|unhappy path.*write-ticket)' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(re-scop.*(step 4|memento-4-human-review)|(step 4|memento-4-human-review).*re-scop)' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'test belongs to the task' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(neither.*merged|merged.*neither)' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'seam test' skills/memento-2-planning/SKILL.md; then
+  pass planning-lists-criteria
+else
+  fail planning-lists-criteria "AC2/AC3/AC17: skills/memento-2-planning/SKILL.md plan template to add a '## Acceptance criteria' heading with [ticket]/[drafted]/[re-scoped: tags, drafting to reference the write-ticket skill's unhappy-path rule, an AC found wrong later to loop back through step 4/memento-4-human-review, and the Q6 ownership rule ('a test belongs to the task' that turns it green, and a task with neither an AC test nor a seam test is merged into a neighbour)"
+fi
+
+if [ -f skills/memento-3-auto-review/SKILL.md ] \
+  && grep -qiE '(acceptance criteri.*unhappy path|unhappy path.*acceptance criteri)' skills/memento-3-auto-review/SKILL.md; then
+  pass auto-review-flags-missing-unhappy-path
+else
+  fail auto-review-flags-missing-unhappy-path "AC4: skills/memento-3-auto-review/SKILL.md Devil's Advocate role to flag an acceptance-criteria set missing a real unhappy path (co-occurring 'unhappy path' and 'acceptance criteria' wording)"
+fi
+
+if [ -f skills/memento-4-human-review/SKILL.md ] \
+  && grep -qF '## Acceptance criteria (added during planning)' skills/memento-4-human-review/SKILL.md \
+  && grep -qiE '(comment.*never edit|never edit.*comment)' skills/memento-4-human-review/SKILL.md \
+  && grep -qiE '(epic.*(no criteri|never post)|(no criteri|never post).*epic)' skills/memento-4-human-review/SKILL.md \
+  && grep -qiE '(never a second|not duplicat|does not duplicat)' skills/memento-4-human-review/SKILL.md \
+  && grep -qiE '(verdict|prompt).*(which criteri|what.*post)' skills/memento-4-human-review/SKILL.md; then
+  pass human-review-posts-criteria-on-approve
+else
+  fail human-review-posts-criteria-on-approve "AC5/AC6/AC14/AC15/AC16: skills/memento-4-human-review/SKILL.md to append drafted criteria under a '## Acceptance criteria (added during planning)' heading, post changes to existing criteria as a comment without ever editing their text, post nothing for an epic, replace rather than duplicate criteria on a second approval, and have the verdict prompt disclose which criteria approval will post and to which ticket"
+fi
+
+if [ -f skills/memento-0-using/SKILL.md ] \
+  && grep -qF '## Acceptance criteria' skills/memento-0-using/SKILL.md \
+  && grep -qiE '(never post.*criteri|criteri.*never post)' skills/memento-0-using/SKILL.md \
+  && grep -qiE '(draft.*reply|reply.*draft)' skills/memento-0-using/SKILL.md; then
+  pass criteria-never-posted-without-approval
+else
+  fail criteria-never-posted-without-approval "AC7: skills/memento-0-using/SKILL.md Small route's minimal plan to gain a '## Acceptance criteria' section, the ticket draft to go in the reply instead of being posted, and the unattended contract to say acceptance criteria are never posted"
+fi
+
+if [ -f skills/memento-1-brainstorming/SKILL.md ] && [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qE 'A/B/C' skills/memento-1-brainstorming/SKILL.md && grep -qF '⭐' skills/memento-1-brainstorming/SKILL.md \
+  && grep -qE 'A/B/C' skills/memento-2-planning/SKILL.md && grep -qF '⭐' skills/memento-2-planning/SKILL.md \
+  && ! grep -q 'replies with a number' skills/memento-1-brainstorming/SKILL.md \
+  && ! grep -q 'plain numbered markdown' skills/memento-1-brainstorming/SKILL.md \
+  && ! grep -q 'replies with a number' skills/memento-2-planning/SKILL.md \
+  && ! grep -q 'plain numbered markdown' skills/memento-2-planning/SKILL.md; then
+  pass options-lettered-with-star
+else
+  fail options-lettered-with-star "AC13: skills/memento-1-brainstorming/SKILL.md and skills/memento-2-planning/SKILL.md to letter options A/B/C with a trailing ⭐ marking the recommendation, and neither to still say 'replies with a number' or 'plain numbered markdown'"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else
