@@ -327,6 +327,25 @@ else
   fail tdd-red-one-verifier-per-criterion "AC9/AC10/AC11: $tdd_red_skill to state every acceptance criterion has exactly one verifier, the fewest tests that cover all criteria, a test covers several criteria only when they share the same setup and action, tests grouped by owning task, a task with no criterion test gets its seam test, and test ids written back into the plan's '## Acceptance criteria'; $human_smoke_skill to build its checklist from the criteria marked 'smoke' (checklist/criteria/smoke co-occurring on one line); and no skill file under skills/ to still state the fixed test budget ('1 happy', '2 tests per task', 'Exactly 2 tests', '2-test budget')"
 fi
 
+final_review_skill=skills/memento-8-final-review/SKILL.md
+
+if [ -f "$final_review_skill" ] \
+  && grep -qi 'tests reviewer' "$final_review_skill" \
+  && grep -qiE '(criteri.*verifier|verifier.*criteri)' "$final_review_skill" \
+  && grep -qiE '(criteri.*no verifier|no verifier.*criteri)' "$final_review_skill" \
+  && grep -qiE '(same criteri|duplicat.*criteri|criteri.*duplicat)' "$final_review_skill" \
+  && grep -qF '## Acceptance criteria' "$final_review_skill" \
+  && grep -qiE 'source:? *none' "$final_review_skill" \
+  && grep -qiE '(source.*epic|epic.*source)' "$final_review_skill" \
+  && grep -qF -e '- [x]' "$final_review_skill" \
+  && grep -qiE '(name.*verifier|verifier.*name)' "$final_review_skill" \
+  && grep -qiE '(exempt.*cap|cap.*exempt)' "$final_review_skill" \
+  && grep -qiE '(no ticket.*issue|issue.*no ticket)' "$final_review_skill"; then
+  pass final-review-checks-criteria
+else
+  fail final-review-checks-criteria "AC8/AC12: $final_review_skill's Tests reviewer to check the acceptance-criteria map (flag a criterion with no verifier, and flag two tests verifying the same criterion), and the PR body to gain a '## Acceptance criteria' section only when Source: is none or an epic, with '- [x]' lines each naming their verifier, exempt from the 4-bullet cap, plus no new issue opened for a task with no ticket"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else
