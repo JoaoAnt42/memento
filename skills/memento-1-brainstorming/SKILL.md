@@ -1,6 +1,6 @@
 ---
 name: memento-1-brainstorming
-description: Step 1 of Memento. Use when receiving a new task (markdown, screenshots, verbal description) that will go through the Memento cycle, before any planning or code.
+description: Step 1 of Memento. Use when receiving a new task (markdown, screenshots, verbal description, ticket) that will go through the Memento cycle, before any planning or code.
 ---
 
 # Memento — Brainstorming
@@ -10,6 +10,8 @@ Explore intent, requirements, constraints. No code yet. No plan file yet.
 ## Premise Auditor (run first, before any options)
 
 The most expensive misses aren't bad design — they're a **wrong frame inherited from the task** and **environment facts assumed from partial code reads**. Propose-4-options refines *inside* a frame; it cannot break the frame. The auto-review skeptic (step 3) attacks the *plan within locked decisions* — by then it's too late. So before any decision sets, dispatch one **Premise Auditor** subagent (`Explore`-class), in parallel with the `memento-0` prior-art sweep.
+
+**Read the ticket first.** When the task names a GitHub issue or Linear ticket, read its body and existing acceptance criteria, including any that exist only in images embedded in it (view them), before briefing the Premise Auditor. The ticket text is part of the raw task below.
 
 **Independence is the mechanism.** Give it the **raw task** (the user's original words) + repo access — *never* your already-narrowed summary. Brief it plainly: *"the framing in this task may be wrong; assume nothing the task asserts is true until checked."* If you feed it your frame, it inherits your blind spot. (Same reason test-writer ≠ implementer.)
 
@@ -39,7 +41,7 @@ This is a **pre-decision** instrument only. Do not re-run it as a standing revie
 - **Confidence + falsifier on load-bearing claims.** Every research finding that scope or the plan rests on gets tagged: confidence (high / medium / low), a falsifier (the observation that would change the answer), and its source (reproduced observation / prior implementation / written spec / code read / inference). `reproduced observation` is the strongest tier — an observation reproduced by a command that was actually run. An inference with no authoritative source behind it is medium at best.
 - **No question limit.** Ask as many as needed.
 - **Propose-4-options.** For every question where multiple reasonable answers exist, generate 4 options, pick one, say why. User confirms or redirects. Banned: dumb binary yes/no when a multi-option framing exists.
-- **Ask in plain numbered markdown — never an option-picker widget.** The question, then a numbered list, recommendation marked. The user replies with a number. A picker needs interactive key navigation, so it deadlocks any session driven over a pipe or a `send` command (see step 0d) and can't be answered from a phone or a log. Text is answerable from anywhere. Applies to unattended runs too — there the same numbered options go into `## Decisions taken unilaterally` instead of into a question.
+- **Ask in plain markdown with lettered options — never an option-picker widget.** The question, then the options lettered A/B/C, the recommendation marked with a trailing ⭐. The user replies with the letter. A picker needs interactive key navigation, so it deadlocks any session driven over a pipe or a `send` command (see step 0d) and can't be answered from a phone or a log. Text is answerable from anywhere. Applies to unattended runs too — there the same lettered options go into `## Decisions taken unilaterally` instead of into a question.
 - **Group related questions.** Don't drip-feed.
 - **Terse.** Fragments OK. No filler.
 

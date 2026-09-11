@@ -246,6 +246,161 @@ else
   fail readme-step-table-has-work-summary-row "README.md step table to have a row for step 8.6 naming memento-8c-work-summary"
 fi
 
+if [ -f skills/memento-1-brainstorming/SKILL.md ] \
+  && grep -qE '^description:.*ticket' skills/memento-1-brainstorming/SKILL.md \
+  && grep -qE 'ticket, read its body and existing acceptance criteri[^.]*images embedded[^.]*before briefing the Premise Auditor' skills/memento-1-brainstorming/SKILL.md \
+  && printf '%s' "$using_small_route_section" | grep -qE 'from the task, and read the ticket.s body and existing acceptance criteria when the task names one'; then
+  pass brainstorming-reads-ticket
+else
+  fail brainstorming-reads-ticket "AC1: skills/memento-1-brainstorming/SKILL.md frontmatter description to mention 'ticket', and step 1 to read the ticket's body and existing acceptance criteria (images included) before briefing the Premise Auditor; skills/memento-0-using/SKILL.md Small-route Derive step to read them too"
+fi
+
+if [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qE '^## Acceptance criteria' skills/memento-2-planning/SKILL.md \
+  && grep -qF '[ticket]' skills/memento-2-planning/SKILL.md \
+  && grep -qF '[drafted]' skills/memento-2-planning/SKILL.md \
+  && grep -qF '[re-scoped:' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(write-ticket.*unhappy path|unhappy path.*write-ticket)' skills/memento-2-planning/SKILL.md \
+  && grep -qE '^Posted: <YYYY-MM-DD> <ticket> body \(AC4, AC5\); <YYYY-MM-DD> <ticket> comment \(AC3 r2\)' skills/memento-2-planning/SKILL.md \
+  && grep -qE 'marked `\[re-scoped: <why>, r<n>\]` \(`r1`, then \+1 on each re-scope of it\)' skills/memento-2-planning/SKILL.md \
+  && grep -qF -e '- AC<n> [re-scoped: <why>, r<n>]' skills/memento-2-planning/SKILL.md \
+  && ! grep -qF '<YYYY-MM-DD>]' skills/memento-2-planning/SKILL.md \
+  && grep -qE 'any `smoke` verifier forces `needs_human_smoke: true`' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'test belongs to the task' skills/memento-2-planning/SKILL.md \
+  && grep -qE 'when several tasks touch a criterion, that is the task whose change makes it pass \(the later one in task order\)' skills/memento-2-planning/SKILL.md \
+  && ! grep -q 'last in its chain' skills/memento-2-planning/SKILL.md \
+  && grep -qE 'a task with neither is merged into a neighbour at planning\.' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'seam test' skills/memento-2-planning/SKILL.md; then
+  pass planning-lists-criteria
+else
+  fail planning-lists-criteria "AC2/AC3: skills/memento-2-planning/SKILL.md plan template to add a '## Acceptance criteria' heading with [ticket]/[drafted]/[re-scoped: <why>, r<n>] tags (r1, then +1 on each re-scope, no date) and a 'Posted: <date> <ticket> body (AC4, AC5); <date> <ticket> comment (AC3 r2)' line, drafting to reference the write-ticket skill's unhappy-path rule, any smoke verifier to force needs_human_smoke: true, and the ownership rule (a test belongs to the task whose change makes it pass, the later one in task order; a task with neither a criterion test nor a seam test is merged into a neighbour at planning)"
+fi
+
+if [ -f skills/memento-3-auto-review/SKILL.md ] \
+  && grep -qE 'Devil.s Advocate.*\. Flags `## Acceptance criteria` missing a real unhappy path' skills/memento-3-auto-review/SKILL.md; then
+  pass auto-review-flags-missing-unhappy-path
+else
+  fail auto-review-flags-missing-unhappy-path "AC4: skills/memento-3-auto-review/SKILL.md Devil's Advocate role to flag an acceptance-criteria set missing a real unhappy path (co-occurring 'unhappy path' and 'acceptance criteria' wording)"
+fi
+
+if [ -f skills/memento-4-human-review/SKILL.md ] \
+  && grep -qE 'The first post creates its `## Acceptance criteria \(added during planning\)` block' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'later posts append only the new lines, leaving every existing line and its tick state byte-for-byte' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'Never a second block' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'Write the full body back with the tracker.s replace-style edit; nothing new' skills/memento-4-human-review/SKILL.md \
+  && ! grep -q 'appends or replaces' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'one comment listing the changes[^.]*\. Never edit the ticket.s existing criteria text' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'Never post when `Source:` is `none`' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'Never post when [^.]*or an epic' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'each line posts to the ticket it names' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'not yet posted while no `body` entry for its ticket lists its id' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'a `\[re-scoped\]` line, while no `comment` entry lists its id with its current `r<n>`' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'Each successful write appends its own entry to the plan.s `Posted:` line, naming the ticket and listing each id individually, never as a range; never rewrite an earlier one' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'A write fails\*\*.{1,6}append no entry for it, put its block or comment text in the reply[^.]*continue the cycle' skills/memento-4-human-review/SKILL.md \
+  && ! grep -q 'leave `Posted:` unchanged' skills/memento-4-human-review/SKILL.md \
+  && grep -qE 'the prompt says which criteri[^.]*ticket' skills/memento-4-human-review/SKILL.md; then
+  pass human-review-posts-criteria-on-approve
+else
+  fail human-review-posts-criteria-on-approve "AC5/AC6/AC14/AC15/AC16: skills/memento-4-human-review/SKILL.md to create the '## Acceptance criteria (added during planning)' block once and append only new drafted lines to it byte-for-byte (never a second block, full body written back, no write when nothing is new), post changes to existing criteria as a comment without ever editing their text, post nothing when Source: is none or an epic, post each line to the ticket it names, treat a [drafted] line as posted once a body entry for its ticket lists its id and a [re-scoped] line once a comment entry lists its id with its current r<n>, append one Posted: entry per successful write naming the ticket with ids listed individually, append none on a failed write and put its text in the reply, and have the verdict prompt say which criteria approval will post and to which ticket"
+fi
+
+if [ -f skills/memento-0-using/SKILL.md ] \
+  && printf '%s' "$using_small_route_section" | grep -qF '## Acceptance criteria' \
+  && printf '%s' "$using_small_route_section" | grep -qE 'Criteria are never posted to the ticket on this route; the drafted ones go in the reply' \
+  && printf '%s' "$using_small_route_section" | grep -qE 'a criterion only a human smoke test can verify makes the task Large' \
+  && grep -qE 'Verdict \(step 4\).*never post acceptance criteria' skills/memento-0-using/SKILL.md; then
+  pass criteria-never-posted-without-approval
+else
+  fail criteria-never-posted-without-approval "AC7: skills/memento-0-using/SKILL.md Small route's minimal plan to gain a '## Acceptance criteria' section, the ticket draft to go in the reply instead of being posted, and the unattended contract to say acceptance criteria are never posted"
+fi
+
+if [ -f skills/memento-1-brainstorming/SKILL.md ] && [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qE 'A/B/C.*⭐' skills/memento-1-brainstorming/SKILL.md \
+  && grep -qE 'A/B/C.*⭐' skills/memento-2-planning/SKILL.md \
+  && ! grep -q 'replies with a number' skills/memento-1-brainstorming/SKILL.md \
+  && ! grep -q 'plain numbered markdown' skills/memento-1-brainstorming/SKILL.md \
+  && ! grep -q 'replies with a number' skills/memento-2-planning/SKILL.md \
+  && ! grep -q 'plain numbered markdown' skills/memento-2-planning/SKILL.md; then
+  pass options-lettered-with-star
+else
+  fail options-lettered-with-star "AC13: skills/memento-1-brainstorming/SKILL.md and skills/memento-2-planning/SKILL.md to letter options A/B/C with a trailing ⭐ marking the recommendation, and neither to still say 'replies with a number' or 'plain numbered markdown'"
+fi
+
+tdd_red_skill=skills/memento-6-tdd-red/SKILL.md
+human_smoke_skill=skills/memento-7b-human-smoke/SKILL.md
+
+if [ -f "$tdd_red_skill" ] \
+  && grep -qiE '(criteri.*exactly one verifier|exactly one verifier.*criteri)' "$tdd_red_skill" \
+  && grep -qiE '(fewest tests.*criteri|criteri.*fewest tests)' "$tdd_red_skill" \
+  && grep -qiE '(criteri.*same setup and action|same setup and action.*criteri)' "$tdd_red_skill" \
+  && grep -qiE '(grouped by.*owning task|owning task.*grouped)' "$tdd_red_skill" \
+  && grep -qiE '(criteri.*seam test|seam test.*criteri)' "$tdd_red_skill" \
+  && grep -qE 'A task with neither .{1,6}stop and loop back to `memento-2-planning` to merge it' "$tdd_red_skill" \
+  && grep -qiE '(test ids.*criteri|criteri.*test ids)' "$tdd_red_skill" \
+  && [ -f "$human_smoke_skill" ] \
+  && grep -iE 'checklist' "$human_smoke_skill" | grep -iE 'criteri' | grep -qiE 'smoke' \
+  && ! grep -rqiE '1 happy|2 tests per task|Exactly 2 tests|2-test budget' skills/; then
+  pass tdd-red-one-verifier-per-criterion
+else
+  fail tdd-red-one-verifier-per-criterion "AC9/AC10/AC11: $tdd_red_skill to state every acceptance criterion has exactly one verifier, the fewest tests that cover all criteria, a test covers several criteria only when they share the same setup and action, tests grouped by owning task, a task with no criterion test gets its seam test (and one with neither loops back to memento-2-planning to be merged), and test ids written back into the plan's '## Acceptance criteria'; $human_smoke_skill to build its checklist from the criteria marked 'smoke' (checklist/criteria/smoke co-occurring on one line); and no skill file under skills/ to still state the fixed test budget ('1 happy', '2 tests per task', 'Exactly 2 tests', '2-test budget')"
+fi
+
+final_review_skill=skills/memento-8-final-review/SKILL.md
+
+if [ -f "$final_review_skill" ] \
+  && grep -qi 'tests reviewer' "$final_review_skill" \
+  && grep -qE '\*\*Tests\*\*.*[;,] flags a criterion in the plan.s `## Acceptance criteria` with no verifier' "$final_review_skill" \
+  && grep -qE '\*\*Tests\*\*.*with no verifier, two tests verifying the same criterion' "$final_review_skill" \
+  && grep -qE '\*\*Tests\*\*.*two tests verifying the same criterion, and a `smoke` criterion when the plan has no `## Human smoke: pass`' "$final_review_skill" \
+  && grep -qF '## Acceptance criteria' "$final_review_skill" \
+  && grep -qiE 'source:? *none' "$final_review_skill" \
+  && grep -qiE '(source.*epic|epic.*source)' "$final_review_skill" \
+  && grep -qE '`Refs #N` when `Source:` is an epic, never `Closes #N`' "$final_review_skill" \
+  && grep -qF -e '- [x]' "$final_review_skill" \
+  && grep -qiE '(name.*verifier|verifier.*name)' "$final_review_skill" \
+  && grep -qiE '(exempt.*cap|cap.*exempt)' "$final_review_skill" \
+  && grep -qiE '(no ticket.*issue|issue.*no ticket)' "$final_review_skill"; then
+  pass final-review-checks-criteria
+else
+  fail final-review-checks-criteria "AC8/AC12: $final_review_skill's Tests reviewer to check the acceptance-criteria map (flag a criterion with no verifier, two tests verifying the same criterion, and a smoke criterion when the plan has no '## Human smoke: pass'), an epic Source: to be linked with 'Refs #N', never 'Closes #N', and the PR body to gain a '## Acceptance criteria' section only when Source: is none or an epic, with '- [x]' lines each naming their verifier, exempt from the 4-bullet cap, plus no new issue opened for a task with no ticket"
+fi
+
+implementing_skill=skills/memento-7-implementing/SKILL.md
+receiving_review_skill=skills/memento-9-receiving-review/SKILL.md
+
+human_review_skill=skills/memento-4-human-review/SKILL.md
+rescope_pointer='\*\*Re-scope after approval\*\* in `memento-4-human-review`'
+
+if [ -f "$human_review_skill" ] && [ -f "$human_smoke_skill" ] && [ -f "$implementing_skill" ] && [ -f "$receiving_review_skill" ] && [ -f "$skill" ] && [ -f "$tdd_red_skill" ] \
+  && grep -qE '^## Re-scope after approval$' "$human_review_skill" \
+  && grep -qE 'Every session past this step is attended, so a criterion found wrong at step 5, 7, 7b or 9, or one a later step needs to add, stops the cycle\.' "$human_review_skill" \
+  && grep -qE 'Show the change, what it would post, and to which ticket; the user.s go-ahead is the approval for that post\.' "$human_review_skill" \
+  && grep -qE 'mark it in the plan \(`\[re-scoped: <why>, r<n>\]`, or a new `\[drafted\]` line\) and post it per the section above' "$human_review_skill" \
+  && grep -qE 'run `memento-6-tdd-red` and `memento-7-implementing` for that task only\. Then resume at the step that found it\. Never re-enter step 5 or auto-review for it\.' "$human_review_skill" \
+  && grep -qE "wrong or missing criterion follows $rescope_pointer" skills/memento-2-planning/SKILL.md \
+  && ! grep -q 'loops back here to re-scope' skills/memento-2-planning/SKILL.md \
+  && grep -qE "still written as \`Mechanism:\`, not \`Refuted:\`, and doesn.t count toward the second-refutation stop; re-scope that criterion first per $rescope_pointer" "$skill" \
+  && ! grep -q 'takes the same route' "$skill" \
+  && grep -qE "If tests are wrong, loop back to step 6; a wrong criterion follows $rescope_pointer" "$implementing_skill" \
+  && grep -qE "tests missed the case.{1,6}add or re-scope the criterion it breaks per $rescope_pointer" "$human_smoke_skill" \
+  && grep -qE 'impl is wrong but tests are fine.{1,6}loop back to `memento-7-implementing`' "$human_smoke_skill" \
+  && grep -qE 'plan itself was wrong.{1,6}loop back to `memento-2-planning`' "$human_smoke_skill" \
+  && ! grep -q 'memento-3-auto-review' "$human_smoke_skill" \
+  && grep -qE "changes what a criterion means is re-scoped per $rescope_pointer before the reply batch is posted" "$receiving_review_skill" \
+  && grep -qE "step 6 if tests are wrong\); a wrong criterion follows $rescope_pointer" "$receiving_review_skill" \
+  && grep -qE 'run this for the owning task only; a test already green on arrival is committed as `test: <task-slug> \(already green\)` instead of looping' "$tdd_red_skill" \
+  && grep -qE 'a dropped criterion.s test is deleted in the same commit' "$tdd_red_skill" \
+  && grep -qE 'record `Red HEAD: <sha>` per repo in the plan \(a re-run re-records it\)' "$tdd_red_skill" \
+  && grep -qE 'A task whose latest test commit is `\(already green\)` is skipped' "$implementing_skill" \
+  && grep -qF 'git diff --quiet <Red HEAD> HEAD -- <task test paths>' "$implementing_skill" \
+  && grep -qF 'git diff --quiet <Red HEAD> HEAD -- <test paths>' "$implementing_skill" \
+  && ! grep -qE 'git diff --quiet <(last-)?red-SHA>' "$implementing_skill" \
+  && ! grep -rqi 'last red SHA' skills/; then
+  pass rescope-after-approval
+else
+  fail rescope-after-approval "AC17: $human_review_skill to own a '## Re-scope after approval' rule (sessions past step 4 are attended; a criterion found wrong or needed at step 5, 7, 7b or 9 stops the cycle and shows the change, what it would post and to which ticket; the go-ahead is the approval for that post; mark it [re-scoped: <why>, r<n>] or [drafted], post it, run memento-6-tdd-red and memento-7-implementing for the owning task only, resume at the step that found it, never re-enter step 5 or auto-review), with steps 2, 5, 7, 7b and 9 pointing to it instead of routing through memento-2/3/4 (5 writes Mechanism:, not Refuted:, outside the second-refutation stop; 7b keeps its impl-wrong and plan-wrong routes); $tdd_red_skill to commit an already-green test as '(already green)', delete a dropped criterion's test in the same commit, and record Red HEAD per repo; $implementing_skill to skip an '(already green)' task and freeze tests against <Red HEAD>; no skill to still say 'last red SHA'"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else

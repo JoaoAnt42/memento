@@ -25,15 +25,14 @@ If the flag is missing, halt and ask the user to set it in the plan.
    - Dev server (e.g. `npm run dev`, `pnpm dev`, `uvicorn`, `dotnet run`)
    - Dependencies (docker compose up, db migrations, seed data)
    - Use `run_in_background: true` so you stay responsive.
-3. Generate a **checklist of things to click/verify**, derived from the tasks + known edge cases. Include:
+3. Generate a **checklist of things to click/verify**: the criteria marked `smoke` in the plan's `## Acceptance criteria`, plus what can't be asserted automatically. Include:
    - URL (e.g. `http://localhost:3000/foo`)
-   - Steps to reproduce the happy path
-   - Steps for each edge case the tests cover
+   - Steps and expected outcome for each `smoke` criterion
    - Anything that is hard to assert automatically (animations, visual polish, copy)
 4. Present to user. Wait for verdict: **ok / found-issue: <description>**.
 5. On ok → append `## Human smoke: pass` to plan, set `status: final-review`, invoke `memento-8-final-review`.
 6. On found-issue → analyze the issue:
-   - If tests missed the case → loop back to `memento-6-tdd-red` to add a failing test, then `memento-7-implementing`.
+   - If tests missed the case → add or re-scope the criterion it breaks per **Re-scope after approval** in `memento-4-human-review`.
    - If impl is wrong but tests are fine → loop back to `memento-7-implementing`.
    - If the plan itself was wrong → loop back to `memento-2-planning`.
 7. **Shut down started services on exit** (success or failure). No orphan processes.

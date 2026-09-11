@@ -7,16 +7,29 @@ description: Step 4 of Memento. Use after auto-review. Submits the updated plan 
 
 Submit the updated plan to the user. Wait for verdict.
 
-**Unattended sessions stop here** (`memento-0-using` step 0d). Set `status: auto-review`, report the plan path plus the `## Decisions taken unilaterally` list, and end the run. Do not synthesize a verdict, do not safe-prune, do not create worktrees. The human runs this step later from their own session. Approving your own plan is the one step in this cycle with no downstream check on it.
+**Unattended sessions stop here** (`memento-0-using` step 0d). Set `status: auto-review`, report the plan path plus the `## Decisions taken unilaterally` list, and end the run. Do not synthesize a verdict, do not post acceptance criteria, do not safe-prune, do not create worktrees. The human runs this step later from their own session. Approving your own plan is the one step in this cycle with no downstream check on it.
 
 ## Protocol
 
 1. Summarize the plan in ≤10 bullets (title, task list, top 3 decisions, top 3 risks). Link the plan file path.
-2. Ask for verdict: **approve / revise / reject**.
+2. Ask for verdict: **approve / revise / reject**. When approval will post acceptance criteria (below), the prompt says which criteria and to which ticket. Approval counts as the ask to post only because the prompt disclosed it.
 3. Responses:
-   - **approve** → run the **safe-prune sweep** (below), then create the worktrees — one per `repos:` entry. `type:` `fix` or `perf` → set `status: diagnosing`, invoke `memento-5-diagnosing`; any other type → `status: tdd-red`, invoke `memento-6-tdd-red`.
+   - **approve** → **post acceptance criteria** (below), run the **safe-prune sweep** (below), then create the worktrees — one per `repos:` entry. `type:` `fix` or `perf` → set `status: diagnosing`, invoke `memento-5-diagnosing`; any other type → `status: tdd-red`, invoke `memento-6-tdd-red`.
    - **revise** → capture requested changes, set `status: planning`, invoke `memento-2-planning` to amend.
    - **reject** → set `status: planning`, loop back to `memento-1-brainstorming` (premise is wrong).
+
+## Posting acceptance criteria (on approve)
+
+From the plan's `## Acceptance criteria`, before the worktrees. Never post when `Source:` is `none` or an epic (epics carry no criteria). With several tickets, each line posts to the ticket it names. A `[drafted]` line is not yet posted while no `body` entry for its ticket lists its id; a `[re-scoped]` line, while no `comment` entry lists its id with its current `r<n>`.
+
+- **`[drafted]` lines not yet posted** — read the ticket body. The first post creates its `## Acceptance criteria (added during planning)` block of `- [ ]` boxes; later posts append only the new lines, leaving every existing line and its tick state byte-for-byte. Never a second block. Write the full body back with the tracker's replace-style edit; nothing new → skip the write.
+- **`[re-scoped]` lines not yet posted** — one comment listing the changes, including to lines already in the block. Never edit the ticket's existing criteria text.
+- Each successful write appends its own entry to the plan's `Posted:` line, naming the ticket and listing each id individually, never as a range; never rewrite an earlier one.
+- **A write fails** → append no entry for it, put its block or comment text in the reply, say so in one line, and continue the cycle.
+
+## Re-scope after approval
+
+Every session past this step is attended, so a criterion found wrong at step 5, 7, 7b or 9, or one a later step needs to add, stops the cycle. Show the change, what it would post, and to which ticket; the user's go-ahead is the approval for that post. On go-ahead, mark it in the plan (`[re-scoped: <why>, r<n>]`, or a new `[drafted]` line) and post it per the section above. If the owning task already has a red SHA, run `memento-6-tdd-red` and `memento-7-implementing` for that task only. Then resume at the step that found it. Never re-enter step 5 or auto-review for it.
 
 ## Worktree creation (on approve)
 
