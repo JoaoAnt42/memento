@@ -18,12 +18,12 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
    - **CRAP** (**`model: sonnet`**) — Change Risk Anti-Patterns: high-complexity low-coverage functions
    - **Simplifier** (**`model: sonnet`**) — cuts, merges, premature abstraction, oversized new files
    - **Devil's Advocate** (**`model: sonnet`**) — assumption attacks, edge cases; flags any module, layer, or path in the diff that is **not in the plan's `## Data contract`** — flow the implementer introduced off-contract (no-op when the plan has no contract section)
-   - **Tests** (**`model: sonnet`**) — coverage gaps, weak assertions, flaky patterns; flags a criterion in the plan's `## Acceptance criteria` with no verifier, and two tests verifying the same criterion
+   - **Tests** (**`model: sonnet`**) — coverage gaps, weak assertions, flaky patterns; flags a criterion in the plan's `## Acceptance criteria` with no verifier, two tests verifying the same criterion, and a `smoke` criterion when the plan has no `## Human smoke: pass`
 2. Each returns a list of findings with severity.
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
 5. Present consolidated review to the user. For non-trivial changes, **pause for user confirmation before applying**.
-6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`. When the task came from an issue, link it (`Closes #N` in the body) — step 8.6's summary carries that link, and nothing else in the cycle creates it.
+6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`. When the task came from an issue, link it (`Closes #N` in the body; `Refs #N` when `Source:` is an epic, never `Closes #N`) — step 8.6's summary carries that link, and nothing else in the cycle creates it.
 7. **Write the decision record into the PR body — not into the plan.** Three sections, in this order, and a conditional fourth:
 
    ```markdown

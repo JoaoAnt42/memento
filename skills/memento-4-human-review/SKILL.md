@@ -20,11 +20,12 @@ Submit the updated plan to the user. Wait for verdict.
 
 ## Posting acceptance criteria (on approve)
 
-From the plan's `## Acceptance criteria`, before the worktrees. Never post when `Source:` is `none` or an epic (epics carry no criteria).
+From the plan's `## Acceptance criteria`, before the worktrees. Never post when `Source:` is `none` or an epic (epics carry no criteria). With several tickets, each line posts to the ticket it names. A `[drafted]` line is not yet posted while `Posted:` doesn't list its id under `body`; a `[re-scoped]` line, while no `comment` entry for its id is dated on or after its re-scope date.
 
-- **`[drafted]` lines** — read the ticket body, add or replace its `## Acceptance criteria (added during planning)` block with them as `- [ ]` boxes, and write the body back. Never a second block. Read-then-write works whether the tracker's write appends or replaces.
-- **`[re-scoped]` lines not yet posted** — one comment listing the changes. Never edit the ticket's existing criteria text.
-- Update the plan's `Posted:` line.
+- **`[drafted]` lines not yet posted** — read the ticket body. The first post creates its `## Acceptance criteria (added during planning)` block of `- [ ]` boxes; later posts append only the new lines, leaving every existing line and its tick state byte-for-byte. Never a second block. Write the full body back with the tracker's replace-style edit; nothing new → skip the write.
+- **`[re-scoped]` lines not yet posted** — one comment listing the changes, including to lines already in the block. Never edit the ticket's existing criteria text.
+- Append one entry per post to the plan's `Posted:` line; never rewrite an earlier one.
+- **A post fails** → leave `Posted:` unchanged, put the block or comment text in the reply, continue to the worktrees, and say so in one line.
 
 ## Worktree creation (on approve)
 

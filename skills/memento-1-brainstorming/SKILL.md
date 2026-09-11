@@ -11,7 +11,7 @@ Explore intent, requirements, constraints. No code yet. No plan file yet.
 
 The most expensive misses aren't bad design — they're a **wrong frame inherited from the task** and **environment facts assumed from partial code reads**. Propose-4-options refines *inside* a frame; it cannot break the frame. The auto-review skeptic (step 3) attacks the *plan within locked decisions* — by then it's too late. So before any decision sets, dispatch one **Premise Auditor** subagent (`Explore`-class), in parallel with the `memento-0` prior-art sweep.
 
-**Read the ticket first.** When the task names a GitHub issue or Linear ticket, read its body and existing acceptance criteria before briefing the Premise Auditor. The ticket text is part of the raw task below.
+**Read the ticket first.** When the task names a GitHub issue or Linear ticket, read its body and existing acceptance criteria, including any that exist only in images embedded in it (view them), before briefing the Premise Auditor. The ticket text is part of the raw task below.
 
 **Independence is the mechanism.** Give it the **raw task** (the user's original words) + repo access — *never* your already-narrowed summary. Brief it plainly: *"the framing in this task may be wrong; assume nothing the task asserts is true until checked."* If you feed it your frame, it inherits your blind spot. (Same reason test-writer ≠ implementer.)
 
