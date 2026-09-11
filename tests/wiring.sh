@@ -309,6 +309,24 @@ else
   fail options-lettered-with-star "AC13: skills/memento-1-brainstorming/SKILL.md and skills/memento-2-planning/SKILL.md to letter options A/B/C with a trailing ⭐ marking the recommendation, and neither to still say 'replies with a number' or 'plain numbered markdown'"
 fi
 
+tdd_red_skill=skills/memento-6-tdd-red/SKILL.md
+human_smoke_skill=skills/memento-7b-human-smoke/SKILL.md
+
+if [ -f "$tdd_red_skill" ] \
+  && grep -qiE '(criteri.*exactly one verifier|exactly one verifier.*criteri)' "$tdd_red_skill" \
+  && grep -qiE '(fewest tests.*criteri|criteri.*fewest tests)' "$tdd_red_skill" \
+  && grep -qiE '(criteri.*same setup and action|same setup and action.*criteri)' "$tdd_red_skill" \
+  && grep -qiE '(grouped by.*owning task|owning task.*grouped)' "$tdd_red_skill" \
+  && grep -qiE '(criteri.*seam test|seam test.*criteri)' "$tdd_red_skill" \
+  && grep -qiE '(test ids.*criteri|criteri.*test ids)' "$tdd_red_skill" \
+  && [ -f "$human_smoke_skill" ] \
+  && grep -iE 'checklist' "$human_smoke_skill" | grep -iE 'criteri' | grep -qiE 'smoke' \
+  && ! grep -rqiE '1 happy|2 tests per task|Exactly 2 tests|2-test budget' skills/; then
+  pass tdd-red-one-verifier-per-criterion
+else
+  fail tdd-red-one-verifier-per-criterion "AC9/AC10/AC11: $tdd_red_skill to state every acceptance criterion has exactly one verifier, the fewest tests that cover all criteria, a test covers several criteria only when they share the same setup and action, tests grouped by owning task, a task with no criterion test gets its seam test, and test ids written back into the plan's '## Acceptance criteria'; $human_smoke_skill to build its checklist from the criteria marked 'smoke' (checklist/criteria/smoke co-occurring on one line); and no skill file under skills/ to still state the fixed test budget ('1 happy', '2 tests per task', 'Exactly 2 tests', '2-test budget')"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else
