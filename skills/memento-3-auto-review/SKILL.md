@@ -9,7 +9,7 @@ Three subagents debate the plan. **The Orchestrator rewrites the plan file in pl
 
 ## Roles
 
-- **Devil's Advocate** — attacks assumptions, finds edge cases, surfaces bad design smells, challenges scope. On large plans, checks `## Data contract` actually pins the seams — flags any flow left open to implementer invention (the under-specification that causes drift in steps 6–8).
+- **Devil's Advocate** — attacks assumptions, finds edge cases, surfaces bad design smells, challenges scope. On large plans, checks `## Data contract` actually pins the seams — flags any flow left open to implementer invention (the under-specification that causes drift in steps 6–8). Flags `## Acceptance criteria` missing a real unhappy path.
 - **Simplifier** — argues for cuts, merges, removals. Hunts premature abstraction and hypothetical requirements.
 - **Orchestrator** — mediates, **guards resolved user decisions**, resolves conflicts, decides, **rewrites the plan file** with updated tasks + decisions, and appends the full transcript.
 
