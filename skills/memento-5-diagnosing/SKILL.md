@@ -41,7 +41,7 @@ Refuted: <theory> — <what falsified it>
 
 - **The loop is the skill.** Everything after it is mechanical. Spend disproportionate effort there. Be aggressive, be creative, refuse to give up.
 - **One-shot, not watch loop.** The recorded command must exit and be rerunnable. A watch-mode wrapper that blocks until interrupted can never be the recorded command.
-- **The diagnosing agent writes no test.** `Verification` is a repro command, not a regression test. Step 6 reads `Mechanism` into the test-writer's brief and still produces 1 happy + 1 edge.
+- **The diagnosing agent writes no test.** `Verification` is a repro command, not a regression test. Step 6 reads `Mechanism` into the brief for the test of the criterion the fix satisfies.
 - **Refutation is usually partial.** Invalidate the tasks the finding actually touches; leave the rest.
 - **Second refutation on the same plan → stop and escalate.** A theory refuted twice means the premise is wrong, not the theory. Hand back and recommend `reject` to `memento-1-brainstorming` rather than another lap.
 - **Redact every secret** in any command or output shown — `<REDACTED>` in its place, loops built against env vars. If the redacted output is not enough to diagnose, say so and ask.
