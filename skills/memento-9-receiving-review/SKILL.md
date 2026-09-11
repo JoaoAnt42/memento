@@ -46,7 +46,7 @@ When unsure, ask — deletion is cheap to skip and impossible to undo.
 - **Never silently ignore feedback.** Every comment gets a reply: implemented, declined-with-reason, or clarification-requested.
 - **Draft replies, don't post them.** A reply on a review thread is prose on a channel the team reads, and the global rule (`~/.claude/CLAUDE.md`, *Never post prose to an issue, ticket, or PR thread unless I ask*) applies. Write the full set into the conversation, wait for the user's go-ahead, then post the batch. One approval for the set, not one per comment. Same register as the PR body — no "Good catch", no marketing adjectives, no hedging.
 - **Resolve after posting.** Once the batch is up, mark each replied thread resolved. Skip the resolve only if the reviewer explicitly said not to, or the reply is a clarification-request still waiting on the reviewer.
-- **The PR thread is the record of feedback, not the plan.** Each comment's resolution lives in the reply to that comment. Do not mirror it into the plan — the plan is deleted on merge, and the reply is where a future reader looks anyway. Update the plan only when feedback changes the *plan itself* (scope, task list, a decision the rest of the cycle depends on), because later steps still read it while the cycle is live. Feedback that changes what a criterion means is re-scoped via `memento-2-planning`, which goes back through step 4, before the reply batch is posted.
+- **The PR thread is the record of feedback, not the plan.** Each comment's resolution lives in the reply to that comment. Do not mirror it into the plan — the plan is deleted on merge, and the reply is where a future reader looks anyway. Update the plan only when feedback changes the *plan itself* (scope, task list, a decision the rest of the cycle depends on), because later steps still read it while the cycle is live. Feedback that changes what a criterion means is re-scoped per **Re-scope after approval** in `memento-4-human-review` before the reply batch is posted.
 
 ## Protocol
 
@@ -61,7 +61,7 @@ When unsure, ask — deletion is cheap to skip and impossible to undo.
 
    Trivial changes (typos, renames, comments, formatting, docs-only) skip re-review. The point: human feedback can introduce new bugs — verify nothing broke before pushing.
 5. Draft a reply per comment with its resolution, show the whole set to the user, and post only on their go-ahead. After posting, mark each replied thread resolved (GraphQL `resolveReviewThread` mutation with the thread node ID). Skip the resolve only when waiting on the reviewer or when the reviewer explicitly said not to.
-6. If blockers remain unresolved, loop back to appropriate earlier step (usually step 7, step 6 if tests are wrong, or `memento-2-planning` if the criterion is wrong).
+6. If blockers remain unresolved, loop back to appropriate earlier step (usually step 7 or step 6 if tests are wrong); a wrong criterion follows **Re-scope after approval** in `memento-4-human-review`.
 
 ## Rule of thumb
 

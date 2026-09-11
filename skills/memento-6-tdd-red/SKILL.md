@@ -13,12 +13,12 @@ Each task is tagged `[repo: <label>]`. Run its test-writer and verifier in that 
 
 ## Protocol
 
-1. For each task, dispatch a **test-writer subagent** (**`model: sonnet`**) on the feature branch. Brief: the criteria this task owns with a `test` verifier, or its seam test when it owns none (see Rules). No implementation. Sonnet is enough — pattern work from a structured spec. **When the plan has a `## Data contract`,** brief the writer with the seam(s) this task implements (see **Seam-aware tests**). **When the plan has a `## Diagnosis`,** brief the writer with its `Mechanism` for the criterion the fix satisfies (see `memento-5-diagnosing`); ignore `Refuted:` entries. When step 4 approves a re-scope on a plan whose tasks already have green SHAs, run this step only for tasks owning a changed criterion; the rest keep their red and green SHAs, and step 7 skips them.
+1. For each task, dispatch a **test-writer subagent** (**`model: sonnet`**) on the feature branch. Brief: the criteria this task owns with a `test` verifier, or its seam test when it owns none (see Rules). No implementation. Sonnet is enough — pattern work from a structured spec. **When the plan has a `## Data contract`,** brief the writer with the seam(s) this task implements (see **Seam-aware tests**). **When the plan has a `## Diagnosis`,** brief the writer with its `Mechanism` for the criterion the fix satisfies (see `memento-5-diagnosing`); ignore `Refuted:` entries. On a re-scope after approval (`memento-4-human-review`), run this for the owning task only; a test already green on arrival is committed as `test: <task-slug> (already green)` instead of looping, and a dropped criterion's test is deleted in the same commit.
 2. When the test-writer returns, dispatch a **separate verifier subagent** (`model: haiku`) to run the tests and confirm they fail for the right reason (not syntax error, not missing import — actual assertion failure). Verifier is mechanical; Haiku is correct.
 3. Before committing, `grep -rn '\[DEBUG-' .` in the worktree must return nothing — step 5's instrumentation is its own to clean, and a probe committed into the red SHA becomes unremovable once step 7 freezes the test paths. Any hit: stop, clean, re-verify.
 4. On confirmed red, commit with `test: red for <task-slug>` and record the SHA in the plan file under that task. Write the test ids (`<file>::<name>`) into the plan's `## Acceptance criteria` in place of `test` on each criterion they cover.
 5. If tests pass immediately (false red), or fail for the wrong reason, the verifier returns that to the main agent — do NOT proceed. Loop: test-writer fixes, verifier re-checks.
-6. When all tasks have a red SHA, set `status: implementing`.
+6. When all tasks have a red SHA and any per-task branches have merged, record `Red HEAD: <sha>` per repo in the plan (a re-run re-records it) and set `status: implementing`.
 
 ## Rules
 

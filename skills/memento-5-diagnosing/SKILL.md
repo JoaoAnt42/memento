@@ -51,7 +51,7 @@ Refuted: <theory> — <what falsified it>
 
 Clean the worktree first (protocol 5), then:
 
-- **Cause confirmed** → `status: tdd-red`, invoke `memento-6-tdd-red`.
-- **Cause refuted** → record the real finding under `Refuted:`, mark invalidated tasks individually, `status: planning`, invoke `memento-2-planning`. A confirmed cause that contradicts the criterion the fix is meant to satisfy takes the same route, to re-scope that criterion.
+- **Cause confirmed** → `status: tdd-red`, invoke `memento-6-tdd-red`. A cause that contradicts the criterion the fix is meant to satisfy is still written as `Mechanism:`, not `Refuted:`, and doesn't count toward the second-refutation stop; re-scope that criterion first per **Re-scope after approval** in `memento-4-human-review`.
+- **Cause refuted** → record the real finding under `Refuted:`, mark invalidated tasks individually, `status: planning`, invoke `memento-2-planning`.
 - **No reproducible symptom** — a corrective `fix` with a known cause and nothing to reproduce (a guard spotted in review, a typo) → `Verification: none — <one-line why>`, `status: tdd-red`, invoke `memento-6-tdd-red`.
 - **Repro blocked** — needs environment access, a captured artifact, or permission to instrument → `status: human-review`, hand back what you tried and what you need. Stop.

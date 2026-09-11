@@ -32,7 +32,7 @@ If the flag is missing, halt and ask the user to set it in the plan.
 4. Present to user. Wait for verdict: **ok / found-issue: <description>**.
 5. On ok → append `## Human smoke: pass` to plan, set `status: final-review`, invoke `memento-8-final-review`.
 6. On found-issue → analyze the issue:
-   - If tests missed the case → loop back to `memento-2-planning` to add or re-scope the criterion it breaks, then through `memento-3-auto-review` and `memento-4-human-review`, which posts the change, before `memento-6-tdd-red` writes its test.
+   - If tests missed the case → add or re-scope the criterion it breaks per **Re-scope after approval** in `memento-4-human-review`.
    - If impl is wrong but tests are fine → loop back to `memento-7-implementing`.
    - If the plan itself was wrong → loop back to `memento-2-planning`.
 7. **Shut down started services on exit** (success or failure). No orphan processes.
