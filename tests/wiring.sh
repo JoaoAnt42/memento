@@ -376,17 +376,19 @@ if [ -n "$verification_rule" ] \
   && printf '%s\n' "$verification_rule" | grep -qF 'replaces it when a ticket holds the criteria' \
   && printf '%s\n' "$verification_rule" | grep -qF '3–5 word handle and its verifier' \
   && printf '%s\n' "$verification_rule" | grep -qF 'criterion text stays in the ticket' \
-  && printf '%s\n' "$verification_rule" | grep -qF "read the current body of each ticket the criteria name" \
-  && printf '%s\n' "$verification_rule" | grep -qF 'a checkbox with the same wording, ignoring tick state and whitespace' \
-  && printf '%s\n' "$verification_rule" | grep -qF 'is written in full, whatever `Posted:` says' \
-  && printf '%s\n' "$verification_rule" | grep -qF "a ticket body you can't read" \
-  && ! grep -qF 'still counts as not yet posted is written in full' "$final_review_skill" \
+  && printf '%s\n' "$verification_rule" | grep -qF 'read the current body of each ticket in `Source:`' \
+  && printf '%s\n' "$verification_rule" | grep -qF "gets a handle only when its own ticket's body has a checkbox or list item with the same wording, ignoring tick state, whitespace and markdown formatting" \
+  && printf '%s\n' "$verification_rule" | grep -qF 'any other criterion is written in full, whatever `Posted:` says' \
+  && printf '%s\n' "$verification_rule" | grep -qF 'A `[re-scoped]` line is always written in full' \
+  && printf '%s\n' "$verification_rule" | grep -qF "A criterion moved to another ticket isn't listed" \
+  && printf '%s\n' "$verification_rule" | grep -qF "Every line for a ticket body you can't read is written in full; name that ticket in your reply" \
+  && ! grep -qi 'not yet posted' "$final_review_skill" \
   && printf '%s\n' "$verification_rule" | grep -qF 'each line names its ticket' \
   && printf '%s\n' "$verification_rule" | grep -qiE 'exempt.*cap' \
   && ! grep -qF 'With a ticket, `Closes #N` carries them' "$final_review_skill"; then
   pass final-review-verification-with-ticket
 else
-  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' template section that replaces '## Acceptance criteria' when a ticket holds the criteria (one criteria section picked by Source:; '- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), reading the current body of each ticket and writing in full any criterion with no checkbox of the same wording (whatever Posted: says, and every line when a ticket body can't be read), naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
+  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' template section that replaces '## Acceptance criteria' when a ticket holds the criteria (one criteria section picked by Source:; '- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), reading the current body of each ticket in Source: and giving a handle only when the criterion's own ticket has a checkbox or list item with the same wording; everything else in full whatever Posted: says, every [re-scoped] line in full, moved criteria left out, and every line in full for a ticket body that can't be read (named in the reply); no 'not yet posted' wording left, naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
 fi
 
 implementing_skill=skills/memento-7-implementing/SKILL.md
