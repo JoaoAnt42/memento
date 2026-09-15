@@ -376,13 +376,17 @@ if [ -n "$verification_rule" ] \
   && printf '%s\n' "$verification_rule" | grep -qF 'replaces it when a ticket holds the criteria' \
   && printf '%s\n' "$verification_rule" | grep -qF '3–5 word handle and its verifier' \
   && printf '%s\n' "$verification_rule" | grep -qF 'criterion text stays in the ticket' \
-  && printf '%s\n' "$verification_rule" | grep -qF 'A line `memento-4-human-review` still counts as not yet posted is written in full' \
+  && printf '%s\n' "$verification_rule" | grep -qF "read the current body of each ticket the criteria name" \
+  && printf '%s\n' "$verification_rule" | grep -qF 'a checkbox with the same wording, ignoring tick state and whitespace' \
+  && printf '%s\n' "$verification_rule" | grep -qF 'is written in full, whatever `Posted:` says' \
+  && printf '%s\n' "$verification_rule" | grep -qF "a ticket body you can't read" \
+  && ! grep -qF 'still counts as not yet posted is written in full' "$final_review_skill" \
   && printf '%s\n' "$verification_rule" | grep -qF 'each line names its ticket' \
   && printf '%s\n' "$verification_rule" | grep -qiE 'exempt.*cap' \
   && ! grep -qF 'With a ticket, `Closes #N` carries them' "$final_review_skill"; then
   pass final-review-verification-with-ticket
 else
-  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' template section that replaces '## Acceptance criteria' when a ticket holds the criteria (one criteria section picked by Source:; '- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), writing in full any line memento-4-human-review still counts as not yet posted, naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
+  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' template section that replaces '## Acceptance criteria' when a ticket holds the criteria (one criteria section picked by Source:; '- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), reading the current body of each ticket and writing in full any criterion with no checkbox of the same wording (whatever Posted: says, and every line when a ticket body can't be read), naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
 fi
 
 implementing_skill=skills/memento-7-implementing/SKILL.md

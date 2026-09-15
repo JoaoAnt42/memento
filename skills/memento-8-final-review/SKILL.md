@@ -55,7 +55,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 
    **`## Acceptance criteria`** goes in only when no ticket holds the criteria (`Source: none` or an epic), one line per criterion; each verifier names the test id or smoke check the Tests reviewer confirmed. It is exempt from the 4-bullet cap because the criteria are the spec. A task with no ticket gets no issue opened for it.
 
-   **`## Verification`** replaces it when a ticket holds the criteria: one line per criterion, a 3–5 word handle and its verifier (test id or smoke check, as above), exempt from the cap; criterion text stays in the ticket. A line `memento-4-human-review` still counts as not yet posted is written in full, since the ticket never got that text. With several tickets, each line names its ticket.
+   **`## Verification`** replaces it when a ticket holds the criteria: one line per criterion, a 3–5 word handle and its verifier (test id or smoke check, as above), exempt from the cap; criterion text stays in the ticket. First read the current body of each ticket the criteria name. A criterion gets a handle only when that body has a checkbox with the same wording, ignoring tick state and whitespace; any other criterion is written in full, whatever `Posted:` says. Re-scopes and moves to another ticket go in comments, so the plan and the body drift. Every line for a ticket body you can't read is written in full. With several tickets, each line names its ticket.
 
    **Do not write a transcript.** No per-finding accept/reject lists, no Bugs #N / Simplifier #N enumeration, no rationale tree, and no `## Overview` restating the sections under it. The diff plus these sections are the record.
 
