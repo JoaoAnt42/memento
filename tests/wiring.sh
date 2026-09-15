@@ -346,6 +346,7 @@ else
 fi
 
 final_review_skill=skills/memento-8-final-review/SKILL.md
+criteria_rule=$(grep -F '**`## Acceptance criteria`**' "$final_review_skill" 2>/dev/null)
 
 if [ -f "$final_review_skill" ] \
   && grep -qi 'tests reviewer' "$final_review_skill" \
@@ -357,8 +358,9 @@ if [ -f "$final_review_skill" ] \
   && grep -qiE '(source.*epic|epic.*source)' "$final_review_skill" \
   && grep -qE '`Refs #N` when `Source:` is an epic, never `Closes #N`' "$final_review_skill" \
   && grep -qF -e '- [x]' "$final_review_skill" \
-  && grep -qiE '(name.*verifier|verifier.*name)' "$final_review_skill" \
-  && grep -qiE '(exempt.*cap|cap.*exempt)' "$final_review_skill" \
+  && printf '%s\n' "$criteria_rule" | grep -qF 'goes in only when no ticket holds the criteria' \
+  && printf '%s\n' "$criteria_rule" | grep -qiE '(name.*verifier|verifier.*name)' \
+  && printf '%s\n' "$criteria_rule" | grep -qiE '(exempt.*cap|cap.*exempt)' \
   && grep -qiE '(no ticket.*issue|issue.*no ticket)' "$final_review_skill"; then
   pass final-review-checks-criteria
 else
@@ -368,17 +370,19 @@ fi
 verification_rule=$(grep -F '**`## Verification`**' "$final_review_skill" 2>/dev/null)
 
 if [ -n "$verification_rule" ] \
+  && grep -qE '^   ## Verification$' "$final_review_skill" \
   && grep -qF -e '- <criterion handle> — <verifier>' "$final_review_skill" \
-  && printf '%s\n' "$verification_rule" | grep -qF 'when a ticket holds the criteria' \
-  && printf '%s\n' "$verification_rule" | grep -qE '3–5 word handle and its verifier' \
+  && grep -qF 'one criteria section picked by `Source:`' "$final_review_skill" \
+  && printf '%s\n' "$verification_rule" | grep -qF 'replaces it when a ticket holds the criteria' \
+  && printf '%s\n' "$verification_rule" | grep -qF '3–5 word handle and its verifier' \
   && printf '%s\n' "$verification_rule" | grep -qF 'criterion text stays in the ticket' \
-  && printf '%s\n' "$verification_rule" | grep -qF '`[drafted]` or `[re-scoped]` line whose id no `Posted:` entry lists is written in full' \
+  && printf '%s\n' "$verification_rule" | grep -qF 'A line `memento-4-human-review` still counts as not yet posted is written in full' \
   && printf '%s\n' "$verification_rule" | grep -qF 'each line names its ticket' \
   && printf '%s\n' "$verification_rule" | grep -qiE 'exempt.*cap' \
   && ! grep -qF 'With a ticket, `Closes #N` carries them' "$final_review_skill"; then
   pass final-review-verification-with-ticket
 else
-  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' section when a ticket holds the criteria ('- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), writing in full any '[drafted]' or '[re-scoped]' line whose id no 'Posted:' entry lists, naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
+  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' template section that replaces '## Acceptance criteria' when a ticket holds the criteria (one criteria section picked by Source:; '- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), writing in full any line memento-4-human-review still counts as not yet posted, naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
 fi
 
 implementing_skill=skills/memento-7-implementing/SKILL.md
