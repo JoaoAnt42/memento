@@ -24,7 +24,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
 5. Present consolidated review to the user. For non-trivial changes, **pause for user confirmation before applying**.
 6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`. When the task came from an issue, link it (`Closes #N` in the body; `Refs #N` when `Source:` is an epic, never `Closes #N`) — step 8.6's summary carries that link, and nothing else in the cycle creates it.
-7. **Write the decision record into the PR body — not into the plan.** Three sections, in this order, and a conditional fourth:
+7. **Write the decision record into the PR body — not into the plan.** Three sections, in this order, then one criteria section picked by `Source:`:
 
    ```markdown
    ## What changed
@@ -39,6 +39,9 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 
    ## Acceptance criteria
    - [x] <criterion> — <verifier>
+
+   ## Verification
+   - <criterion handle> — <verifier>
    ```
 
    **Cap every section at 4 bullets, each 1–2 sentences and ~30 words.** Bullets only — no paragraphs, no sub-bullets, no bold lead-ins. Past the cap, merge bullets or cut the weakest; never add a fifth. A section with nothing to say is dropped, not padded.
@@ -49,7 +52,9 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 
    **`## Not done`** answers the reviewer's first question before they ask it: "why didn't you also fix X, two lines away?"
 
-   **`## Acceptance criteria`** goes in only when no ticket holds the criteria (`Source: none` or an epic), one line per criterion; each verifier names the test id or smoke check the Tests reviewer confirmed. It is exempt from the 4-bullet cap because the criteria are the spec. With a ticket, `Closes #N` carries them; a task with no ticket gets no issue opened for it.
+   **`## Acceptance criteria`** goes in only when no ticket holds the criteria (`Source: none` or an epic), one line per criterion; each verifier names the test id or smoke check the Tests reviewer confirmed. It is exempt from the 4-bullet cap because the criteria are the spec. A task with no ticket gets no issue opened for it.
+
+   **`## Verification`** replaces it when a ticket holds the criteria: one line per criterion, a 3–5 word handle and its verifier, exempt from the cap for the same reason. The criterion text stays in the ticket, which `Closes #N` links — the body adds only the map from criterion to test, which the plan loses at merge. A `[drafted]` or `[re-scoped]` line whose id no `Posted:` entry lists is written in full, since the ticket never got it. With several tickets, each line names its ticket.
 
    **Do not write a transcript.** No per-finding accept/reject lists, no Bugs #N / Simplifier #N enumeration, no rationale tree, and no `## Overview` restating the sections under it. The diff plus these sections are the record.
 

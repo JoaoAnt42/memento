@@ -365,6 +365,22 @@ else
   fail final-review-checks-criteria "AC8/AC12: $final_review_skill's Tests reviewer to check the acceptance-criteria map (flag a criterion with no verifier, two tests verifying the same criterion, and a smoke criterion when the plan has no '## Human smoke: pass'), an epic Source: to be linked with 'Refs #N', never 'Closes #N', and the PR body to gain a '## Acceptance criteria' section only when Source: is none or an epic, with '- [x]' lines each naming their verifier, exempt from the 4-bullet cap, plus no new issue opened for a task with no ticket"
 fi
 
+verification_rule=$(grep -F '**`## Verification`**' "$final_review_skill" 2>/dev/null)
+
+if [ -n "$verification_rule" ] \
+  && grep -qF -e '- <criterion handle> — <verifier>' "$final_review_skill" \
+  && printf '%s\n' "$verification_rule" | grep -qF 'when a ticket holds the criteria' \
+  && printf '%s\n' "$verification_rule" | grep -qE '3–5 word handle and its verifier' \
+  && printf '%s\n' "$verification_rule" | grep -qF 'criterion text stays in the ticket' \
+  && printf '%s\n' "$verification_rule" | grep -qF '`[drafted]` or `[re-scoped]` line whose id no `Posted:` entry lists is written in full' \
+  && printf '%s\n' "$verification_rule" | grep -qF 'each line names its ticket' \
+  && printf '%s\n' "$verification_rule" | grep -qiE 'exempt.*cap' \
+  && ! grep -qF 'With a ticket, `Closes #N` carries them' "$final_review_skill"; then
+  pass final-review-verification-with-ticket
+else
+  fail final-review-verification-with-ticket "AC1-AC4: $final_review_skill's PR body to carry a '## Verification' section when a ticket holds the criteria ('- <criterion handle> — <verifier>' lines, a 3–5 word handle and its verifier, criterion text stays in the ticket), writing in full any '[drafted]' or '[re-scoped]' line whose id no 'Posted:' entry lists, naming its ticket on each line when there are several, exempt from the 4-bullet cap; and the old 'With a ticket, Closes #N carries them' wording gone"
+fi
+
 implementing_skill=skills/memento-7-implementing/SKILL.md
 receiving_review_skill=skills/memento-9-receiving-review/SKILL.md
 
