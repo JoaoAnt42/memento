@@ -15,10 +15,37 @@ Write what a teammate reads in Slack to know what landed and that it needs their
 
 1. **The PRs** — from step 8 (or 8b) when it handed them over, otherwise `gh pr view --json number,url,title,body,closingIssuesReferences` in each repo's worktree. Never guess a PR number from a branch name.
 2. **The issue** — the PR's linked reference, or `Closes #N` / `Fixes #N` / `Refs #N` in its body; full URL via `gh issue view <n> --json url`. **A missing issue link is not a blocker.** Emit the summary with the PR URL alone and note in one line that no issue is linked. Never stop to ask which issue to use and never invent one — a delegated session (step 0d) has nobody to answer, and the summary is worth more than the link.
-3. **The state** — `gh pr view <n> --json state,isDraft,reviewDecision,statusCheckRollup`, **before** emitting anything. Failing checks or a draft PR: do not emit the block at all. Say which PR is not ready and why; emit once it is green. Asking for review on red CI wastes the reviewer's time, and a summary already in the transcript cannot be recalled.
+3. **The state** — `gh pr view <n> --json state,isDraft,reviewDecision,statusCheckRollup`, **before** emitting anything. Failing checks or a draft PR: do not emit the block at all. Say which PR is not ready and why; emit once it is green. Asking for review on red CI wastes the reviewer's time, and a summary already in the transcript cannot be recalled. Checks still running, or no run at all — **The CI verdict** below, which also owns the status and the red-CI route.
 
 4. **The board note** — write the one-liner to the routed Obsidian board (below), **before** emitting.
    It runs only once the state check in 3 has passed, so a draft or red-CI PR never reaches a board.
+
+## The CI verdict
+
+CI starts when the PR does — most target repos trigger on `pull_request` and on pushes to the base
+branch, so the branch push at step 7 started nothing. The run is read here, and nowhere later.
+
+**Name the source first.** A GitHub repo: `gh`, the `statusCheckRollup` above. A repo whose PRs live
+in Azure DevOps: `gh` returns nothing there, so read the build through `az`, the Azure CLI, in that
+repo's worktree — `gh` coming back empty in an Azure repo is not a pass. A repo with no workflow
+files, or whose workflows are all disabled: say this repo has no CI, and step 7's local green is the
+whole verdict.
+
+**Wait up to 10 minutes** for pending checks — `gh pr checks <n> --watch --interval 30` is the one
+call that does this. An **absent run** is unverified rather than green: zero runs means nothing ran,
+whatever the cause, so wait on it like a pending one.
+
+**Every verdict except pending and red is resolved.** Green, "this repo has no CI", and a clean `az`
+read all resolve: record which source was read and what it said in the plan, then set
+`status: in-review`. On a multi-repo plan every repo's verdict must resolve first.
+
+**Red checks** go back to `memento-7-implementing` with the failure. Max 3 rounds, then stop and tell
+the user. Don't emit the block, and don't set the status, on red.
+
+**On timeout**, don't emit the block and don't set the status. Name the PRs still pending and say
+what to do: re-invoke `memento-8c-work-summary` once the run finishes, which is what lands the
+verdict. Nothing else in the cycle comes back to a run left pending. **Once per PR** governs a block
+that was emitted — a run that emitted nothing still owes its summary.
 
 ## The board note
 

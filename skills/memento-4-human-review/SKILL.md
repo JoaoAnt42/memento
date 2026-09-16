@@ -29,7 +29,7 @@ From the plan's `## Acceptance criteria`, before the worktrees. Never post when 
 
 ## Re-scope after approval
 
-Every session past this step is attended, so a criterion found wrong at step 5, 7, 7b or 9, or one a later step needs to add, stops the cycle. Show the change, what it would post, and to which ticket; the user's go-ahead is the approval for that post. On go-ahead, mark it in the plan (`[re-scoped: <why>, r<n>]`, or a new `[drafted]` line) and post it per the section above. If the owning task already has a red SHA, run `memento-6-tdd-red` and `memento-7-implementing` for that task only. Then resume at the step that found it. Never re-enter step 5 or auto-review for it.
+Every session past this step is attended, so a criterion found wrong at step 5, 6, 7, 7b or 9, or one a later step needs to add, stops the cycle. Show the change, what it would post, and to which ticket; the user's go-ahead is the approval for that post. On go-ahead, mark it in the plan (`[re-scoped: <why>, r<n>]`, or a new `[drafted]` line) and post it per the section above. If the owning task already has a red SHA, run `memento-6-tdd-red` and `memento-7-implementing` for that task only. Then resume at the step that found it. Never re-enter step 5 or auto-review for it.
 
 ## Worktree creation (on approve)
 
