@@ -525,6 +525,38 @@ else
   fail implementing-defers-ci-to-8c "AC9: $implementing_skill to point at step 8c (memento-8c-work-summary) for the CI verdict, and to drop the claim that pushing the feature branch makes CI run at the recorded SHA"
 fi
 
+if [ -f "$summary_skill" ] \
+  && grep -qF 'up to 10 minutes' "$summary_skill" \
+  && grep -qF 'pending checks' "$summary_skill" \
+  && grep -qF 'absent run' "$summary_skill" \
+  && grep -qF 'unverified rather than green' "$summary_skill" \
+  && grep -qF 'still pending' "$summary_skill" \
+  && grep -qF 'command to re-run' "$summary_skill"; then
+  pass work-summary-waits-for-ci
+else
+  fail work-summary-waits-for-ci "AC12: $summary_skill to wait up to 10 minutes for pending checks, treat an absent run as unverified rather than green, and on timeout report checks as still pending along with the command to re-run"
+fi
+
+if [ -f "$summary_skill" ] \
+  && grep -qF '`gh`' "$summary_skill" \
+  && grep -qF '`az`' "$summary_skill" \
+  && grep -qF 'this repo has no CI' "$summary_skill" \
+  && grep -qF 'records the verdict in the plan' "$summary_skill"; then
+  pass work-summary-names-ci-source
+else
+  fail work-summary-names-ci-source "AC13: $summary_skill to name its CI source per repo as 'gh', 'az', or 'this repo has no CI', and to record the verdict in the plan"
+fi
+
+if [ -f "$summary_skill" ] \
+  && grep -qE '(status: in-review.{1,200}verdict|verdict.{1,200}status: in-review)' "$summary_skill" \
+  && [ -f "$final_review_skill" ] \
+  && ! grep -qF 'Set `status: in-review`' "$final_review_skill" \
+  && ! printf '%s' "$using_small_route_section" | grep -qF 'sets `status: in-review`'; then
+  pass status-in-review-after-ci-verdict
+else
+  fail status-in-review-after-ci-verdict "AC14: $summary_skill to set status: in-review after step 8c's CI verdict, with the PR-open step in $final_review_skill no longer setting it there and the Small route in skills/memento-0-using/SKILL.md no longer setting it at PR-open either"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else
