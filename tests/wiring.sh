@@ -390,7 +390,7 @@ if [ -f "$final_review_skill" ] \
   && grep -qi 'tests reviewer' "$final_review_skill" \
   && grep -qE '\*\*Tests\*\*.*[;,] flags a criterion in the plan.s `## Acceptance criteria` with no verifier' "$final_review_skill" \
   && grep -qE '\*\*Tests\*\*.*with no verifier, two tests verifying the same criterion' "$final_review_skill" \
-  && grep -qE '\*\*Tests\*\*.*two tests verifying the same criterion, and a `smoke` criterion when the plan has no `## Human smoke: pass`' "$final_review_skill" \
+  && grep -qE '\*\*Tests\*\*.*two tests verifying the same criterion, a `smoke` criterion when the plan has no `## Human smoke: pass`' "$final_review_skill" \
   && grep -qF '## Acceptance criteria' "$final_review_skill" \
   && grep -qiE 'source:? *none' "$final_review_skill" \
   && grep -qiE '(source.*epic|epic.*source)' "$final_review_skill" \
@@ -403,6 +403,26 @@ if [ -f "$final_review_skill" ] \
   pass final-review-checks-criteria
 else
   fail final-review-checks-criteria "AC8/AC12: $final_review_skill's Tests reviewer to check the acceptance-criteria map (flag a criterion with no verifier, two tests verifying the same criterion, and a smoke criterion when the plan has no '## Human smoke: pass'), an epic Source: to be linked with 'Refs #N', never 'Closes #N', and the PR body to gain a '## Acceptance criteria' section only when Source: is none or an epic, with '- [x]' lines each naming their verifier, exempt from the 4-bullet cap, plus no new issue opened for a task with no ticket"
+fi
+
+if [ -f "$final_review_skill" ] \
+  && grep -qE '\*\*Tests\*\*.*`## Human smoke: pass`, a criterion whose check id is missing from `## Checks`' "$final_review_skill" \
+  && grep -qE '\*\*Tests\*\*.*check id is missing from `## Checks`, a duplicated `## Checks` id' "$final_review_skill" \
+  && grep -qE '\*\*Tests\*\*.*a duplicated `## Checks` id, and a `## Checks` entry no criterion references' "$final_review_skill"; then
+  pass final-review-flags-check-id-mismatch
+else
+  fail final-review-flags-check-id-mismatch "AC11: $final_review_skill's Tests reviewer bullet to also flag a criterion whose check id is missing from '## Checks', a duplicated '## Checks' id, and a '## Checks' entry no criterion references"
+fi
+
+if [ -f "$final_review_skill" ] \
+  && grep -qiE '(observe.{1,120}not verified at merge|not verified at merge.{1,120}observe)' "$final_review_skill" \
+  && grep -qiE '(observe.{1,150}(its )?command and (its )?expectation|(its )?command and (its )?expectation.{1,150}observe)' "$final_review_skill" \
+  && grep -qiE '(observe.{1,200}(`## Acceptance criteria`|`## Verification`)|(`## Acceptance criteria`|`## Verification`).{1,200}observe)' "$final_review_skill" \
+  && ! grep -qE '^## Post-deploy' "$final_review_skill" \
+  && ! grep -qE '^## Observations' "$final_review_skill"; then
+  pass final-review-observe-in-pr-body
+else
+  fail final-review-observe-in-pr-body "AC10: $final_review_skill to write each 'observe' criterion into the PR body's existing criteria section ('## Acceptance criteria' or '## Verification'), marked not verified at merge, carrying its command and expectation, with no new section (e.g. a '## Post-deploy' / '## Observations' heading) introduced for it"
 fi
 
 verification_rule=$(grep -F '**`## Verification`**' "$final_review_skill" 2>/dev/null)
