@@ -19,11 +19,11 @@ Each task is tagged `[repo: <label>]`. Before dispatching a task's subagents, `c
    - Surgical: touch only what the task requires. Match existing style.
    - Implementer stays on Opus — code generation is the load-bearing artifact, not a place to compromise.
 2. When the implementer returns, dispatch a **green verifier subagent** (`model: haiku`) to run the tests and confirm pass. Where the task's criteria carry a `check` verifier, the same verifier re-runs those `## Checks` commands and confirms each check now green against the expectation in the plan. Verifier is mechanical (run command, parse pass/fail); Haiku is correct.
-3. If any test fails, send the failure back to the implementer. Max 3 retries, then escalate to user.
+3. If any test or check fails, send the failure back to the implementer. Max 3 retries, then escalate to user.
 4. **Tests frozen — enforce mechanically.** Tests must be byte-identical to the repo's `Red HEAD` in the plan (step 6): `git diff --quiet <Red HEAD> HEAD -- <task test paths>` must exit clean. Any diff to a test file (or to fixtures/conftest under those paths) is a reject — the implementer may not make tests pass by editing them.
-5. **Check commands are frozen.** Step 7 freezes them the same way it freezes test files: a `## Checks` command must be byte-identical to the one step 6 ran red. Editing a command to make its check pass is a reject; a check whose command is wrong loops back to step 6.
+5. **Check commands are frozen.** A `## Checks` command must be byte-identical to the one step 6 recorded red in the plan. That record is the anchor — the commands live in the plan file, outside the repo, so no `git diff` covers them; compare them by hand. Editing a command or its expectation to make a check pass is a reject; a check whose command is wrong loops back to step 6.
 6. Commit the green state: `feat|fix: <task-slug>`.
-7. When all tasks are green locally, push the feature branch and record each task's green SHA in the plan. Most target repos run their workflows on `pull_request` and on pushes to the base branch, so a feature-branch push on its own starts no CI run. The CI verdict is read at step 8c (`memento-8c-work-summary`), once the PR exists.
+7. When all tasks are green locally, push the feature branch and record each task's green SHA in the plan. The CI verdict is read at step 8c (`memento-8c-work-summary`), once the PR exists.
 8. With local green confirmed and the branch pushed, check plan frontmatter `needs_human_smoke`:
    - `true` → set `status: human-smoke`, invoke `memento-7b-human-smoke`.
    - `false` → set `status: final-review`, invoke `memento-8-final-review`.

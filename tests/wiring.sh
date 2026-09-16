@@ -308,7 +308,9 @@ if [ -f skills/memento-2-planning/SKILL.md ] \
   && grep -qiE 'determinist' skills/memento-2-planning/SKILL.md \
   && grep -qiE 'without credentials the agent lacks' skills/memento-2-planning/SKILL.md \
   && grep -qiE 'without side effects on shared infrastructure' skills/memento-2-planning/SKILL.md \
-  && grep -qiE '(everything else is .observe.|otherwise.*.observe.)' skills/memento-2-planning/SKILL.md; then
+  && grep -qiE '(everything else is .observe.|otherwise.*.observe.)' skills/memento-2-planning/SKILL.md \
+  && grep -qF 'Neither sets `needs_human_smoke`' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'never waits on input' skills/memento-2-planning/SKILL.md; then
   pass planning-check-versus-observe
 else
   fail planning-check-versus-observe "AC4: skills/memento-2-planning/SKILL.md to gate 'check' on the command running in the worktree before implementation, deterministically, without credentials the agent lacks and without side effects on shared infrastructure, with everything else defaulting to 'observe'"
@@ -373,7 +375,7 @@ if [ -f "$tdd_red_skill" ] \
   && grep -qiE '(criteri.*same setup and action|same setup and action.*criteri)' "$tdd_red_skill" \
   && grep -qiE '(grouped by.*owning task|owning task.*grouped)' "$tdd_red_skill" \
   && grep -qiE '(criteri.*seam test|seam test.*criteri)' "$tdd_red_skill" \
-  && grep -qE 'A task with neither .{1,6}stop and loop back to `memento-2-planning` to merge it' "$tdd_red_skill" \
+  && grep -qE 'A task with no criterion test, no `check`, and no seam test .{1,6}stop and loop back to `memento-2-planning` to merge it' "$tdd_red_skill" \
   && grep -qiE '(test ids.*criteri|criteri.*test ids)' "$tdd_red_skill" \
   && [ -f "$human_smoke_skill" ] \
   && grep -iE 'checklist' "$human_smoke_skill" | grep -iE 'criteri' | grep -qiE 'smoke' \
@@ -418,8 +420,7 @@ if [ -f "$final_review_skill" ] \
   && grep -qiE '(observe.{1,120}not verified at merge|not verified at merge.{1,120}observe)' "$final_review_skill" \
   && grep -qiE '(observe.{1,150}(its )?command and (its )?expectation|(its )?command and (its )?expectation.{1,150}observe)' "$final_review_skill" \
   && grep -qiE '(observe.{1,200}(`## Acceptance criteria`|`## Verification`)|(`## Acceptance criteria`|`## Verification`).{1,200}observe)' "$final_review_skill" \
-  && ! grep -qE '^## Post-deploy' "$final_review_skill" \
-  && ! grep -qE '^## Observations' "$final_review_skill"; then
+  && ! grep -qE '^ *## (Post-deploy|Observations)' "$final_review_skill"; then
   pass final-review-observe-in-pr-body
 else
   fail final-review-observe-in-pr-body "AC10: $final_review_skill to write each 'observe' criterion into the PR body's existing criteria section ('## Acceptance criteria' or '## Verification'), marked not verified at merge, carrying its command and expectation, with no new section (e.g. a '## Post-deploy' / '## Observations' heading) introduced for it"
@@ -486,11 +487,12 @@ else
 fi
 
 if [ -f "$tdd_red_skill" ] \
-  && grep -qiE "run(s)? each \`check\`.{1,60}before implementation" "$tdd_red_skill" \
-  && grep -qiE 'record(s)? (its|the) failing output' "$tdd_red_skill"; then
+  && grep -qiE "run(s)? each \`check\`.{1,140}before implementation.{1,240}record(s)? (its|the) failing output" "$tdd_red_skill" \
+  && grep -qiE 'already green before implementation is a false red' "$tdd_red_skill" \
+  && grep -qiE "\`observe\` entries (do not|don.t) run here" "$tdd_red_skill"; then
   pass tdd-red-runs-checks-red
 else
-  fail tdd-red-runs-checks-red "AC5: $tdd_red_skill Protocol to run each 'check' before implementation and record its failing output"
+  fail tdd-red-runs-checks-red "AC5: $tdd_red_skill Protocol to run each 'check' before implementation and record its failing output in one instruction, to call an already-green check a false red, and to keep 'observe' entries out of this step"
 fi
 
 if [ -f "$tdd_red_skill" ] \
@@ -510,16 +512,20 @@ fi
 
 if [ -f "$implementing_skill" ] \
   && grep -qiE "check command.{1,40}frozen" "$implementing_skill" \
-  && grep -qiE '(same way it freezes test files|way it freezes test files|as it does test files)' "$implementing_skill" \
+  && grep -qiE 'byte-identical to the one step 6 recorded red' "$implementing_skill" \
+  && grep -qiE 'no .git diff. covers them' "$implementing_skill" \
   && grep -qiE 'verifier.{1,80}confirms? each check.{1,20}green' "$implementing_skill"; then
   pass implementing-freezes-check-commands
 else
-  fail implementing-freezes-check-commands "AC8: $implementing_skill to freeze '## Checks' commands the same way it freezes test files, and its separate green-verifier to confirm each check now green"
+  fail implementing-freezes-check-commands "AC8: $implementing_skill to freeze '## Checks' commands against what step 6 recorded red, saying plainly that no git diff covers a command living in the plan file, and its separate green-verifier to confirm each check now green"
 fi
 
 if [ -f "$implementing_skill" ] \
   && grep -qiE '(memento-8c-work-summary.{1,80}verdict|verdict.{1,80}memento-8c-work-summary)' "$implementing_skill" \
-  && ! grep -qF 'push the feature branch so CI runs' "$implementing_skill"; then
+  && grep -qiE 'local green is what this step confirms' "$implementing_skill" \
+  && ! grep -qF 'push the feature branch so CI runs' "$implementing_skill" \
+  && ! grep -qiE 'at the recorded SHA' "$implementing_skill" \
+  && ! grep -qiE 'authoritative' "$implementing_skill"; then
   pass implementing-defers-ci-to-8c
 else
   fail implementing-defers-ci-to-8c "AC9: $implementing_skill to point at step 8c (memento-8c-work-summary) for the CI verdict, and to drop the claim that pushing the feature branch makes CI run at the recorded SHA"
@@ -531,30 +537,35 @@ if [ -f "$summary_skill" ] \
   && grep -qF 'absent run' "$summary_skill" \
   && grep -qF 'unverified rather than green' "$summary_skill" \
   && grep -qF 'still pending' "$summary_skill" \
-  && grep -qF 'command to re-run' "$summary_skill"; then
+  && grep -qF 're-invoke `memento-8c-work-summary`' "$summary_skill" \
+  && grep -qF 'go back to `memento-7-implementing`' "$summary_skill" \
+  && grep -qF 'Once per PR' "$summary_skill"; then
   pass work-summary-waits-for-ci
 else
-  fail work-summary-waits-for-ci "AC12: $summary_skill to wait up to 10 minutes for pending checks, treat an absent run as unverified rather than green, and on timeout report checks as still pending along with the command to re-run"
+  fail work-summary-waits-for-ci "AC12: $summary_skill to wait up to 10 minutes for pending checks, treat an absent run as unverified rather than green, on timeout report checks as still pending and hand back a re-invocation of itself rather than a bare command, route red checks to memento-7-implementing, and say the once-per-PR rule spares a run that emitted nothing"
 fi
 
 if [ -f "$summary_skill" ] \
   && grep -qF '`gh`' "$summary_skill" \
   && grep -qF '`az`' "$summary_skill" \
   && grep -qF 'this repo has no CI' "$summary_skill" \
-  && grep -qF 'records the verdict in the plan' "$summary_skill"; then
+  && grep -qF 'record which source was read' "$summary_skill" \
+  && ! grep -qiE 'km-searcher|XPenses' "$summary_skill"; then
   pass work-summary-names-ci-source
 else
-  fail work-summary-names-ci-source "AC13: $summary_skill to name its CI source per repo as 'gh', 'az', or 'this repo has no CI', and to record the verdict in the plan"
+  fail work-summary-names-ci-source "AC13: $summary_skill to name its CI source per repo as 'gh', 'az', or 'this repo has no CI', to record which source was read, and to name no private repo by name"
 fi
 
 if [ -f "$summary_skill" ] \
-  && grep -qE '(status: in-review.{1,200}verdict|verdict.{1,200}status: in-review)' "$summary_skill" \
+  && grep -qiE 'every verdict except pending and red is resolved' "$summary_skill" \
+  && grep -qF 'status: in-review' "$summary_skill" \
   && [ -f "$final_review_skill" ] \
-  && ! grep -qF 'Set `status: in-review`' "$final_review_skill" \
-  && ! printf '%s' "$using_small_route_section" | grep -qF 'sets `status: in-review`'; then
+  && grep -qF 'moves to `status: in-review` at step 8.6, after the CI verdict, not here' "$final_review_skill" \
+  && printf '%s' "$using_small_route_section" | grep -qF 'moves the plan to `status: in-review` once CI has a verdict' \
+  && grep -qE '\| *8\.6 *\|.*status: in-review' README.md; then
   pass status-in-review-after-ci-verdict
 else
-  fail status-in-review-after-ci-verdict "AC14: $summary_skill to set status: in-review after step 8c's CI verdict, with the PR-open step in $final_review_skill no longer setting it there and the Small route in skills/memento-0-using/SKILL.md no longer setting it at PR-open either"
+  fail status-in-review-after-ci-verdict "AC14: $summary_skill to resolve every verdict except pending and red and set status: in-review there, $final_review_skill and the Small route in skills/memento-0-using/SKILL.md to point at step 8.6 instead of setting it at PR-open, and README's 8.6 row to say so"
 fi
 
 if [ -f skills/memento-0-using/SKILL.md ] \
