@@ -437,7 +437,7 @@ rescope_pointer='\*\*Re-scope after approval\*\* in `memento-4-human-review`'
 
 if [ -f "$human_review_skill" ] && [ -f "$human_smoke_skill" ] && [ -f "$implementing_skill" ] && [ -f "$receiving_review_skill" ] && [ -f "$skill" ] && [ -f "$tdd_red_skill" ] \
   && grep -qE '^## Re-scope after approval$' "$human_review_skill" \
-  && grep -qE 'Every session past this step is attended, so a criterion found wrong at step 5, 7, 7b or 9, or one a later step needs to add, stops the cycle\.' "$human_review_skill" \
+  && grep -qE 'Every session past this step is attended, so a criterion found wrong at step 5, 6, 7, 7b or 9, or one a later step needs to add, stops the cycle\.' "$human_review_skill" \
   && grep -qE 'Show the change, what it would post, and to which ticket; the user.s go-ahead is the approval for that post\.' "$human_review_skill" \
   && grep -qE 'mark it in the plan \(`\[re-scoped: <why>, r<n>\]`, or a new `\[drafted\]` line\) and post it per the section above' "$human_review_skill" \
   && grep -qE 'run `memento-6-tdd-red` and `memento-7-implementing` for that task only\. Then resume at the step that found it\. Never re-enter step 5 or auto-review for it\.' "$human_review_skill" \
@@ -462,7 +462,47 @@ if [ -f "$human_review_skill" ] && [ -f "$human_smoke_skill" ] && [ -f "$impleme
   && ! grep -rqi 'last red SHA' skills/; then
   pass rescope-after-approval
 else
-  fail rescope-after-approval "AC17: $human_review_skill to own a '## Re-scope after approval' rule (sessions past step 4 are attended; a criterion found wrong or needed at step 5, 7, 7b or 9 stops the cycle and shows the change, what it would post and to which ticket; the go-ahead is the approval for that post; mark it [re-scoped: <why>, r<n>] or [drafted], post it, run memento-6-tdd-red and memento-7-implementing for the owning task only, resume at the step that found it, never re-enter step 5 or auto-review), with steps 2, 5, 7, 7b and 9 pointing to it instead of routing through memento-2/3/4 (5 writes Mechanism:, not Refuted:, outside the second-refutation stop; 7b keeps its impl-wrong and plan-wrong routes); $tdd_red_skill to commit an already-green test as '(already green)', delete a dropped criterion's test in the same commit, and record Red HEAD per repo; $implementing_skill to skip an '(already green)' task and freeze tests against <Red HEAD>; no skill to still say 'last red SHA'"
+  fail rescope-after-approval "AC17: $human_review_skill to own a '## Re-scope after approval' rule (sessions past step 4 are attended; a criterion found wrong or needed at step 5, 6, 7, 7b or 9 stops the cycle and shows the change, what it would post and to which ticket; the go-ahead is the approval for that post; mark it [re-scoped: <why>, r<n>] or [drafted], post it, run memento-6-tdd-red and memento-7-implementing for the owning task only, resume at the step that found it, never re-enter step 5 or auto-review), with steps 2, 5, 7, 7b and 9 pointing to it instead of routing through memento-2/3/4 (5 writes Mechanism:, not Refuted:, outside the second-refutation stop; 7b keeps its impl-wrong and plan-wrong routes); $tdd_red_skill to commit an already-green test as '(already green)', delete a dropped criterion's test in the same commit, and record Red HEAD per repo; $implementing_skill to skip an '(already green)' task and freeze tests against <Red HEAD>; no skill to still say 'last red SHA'"
+fi
+
+if [ -f "$tdd_red_skill" ] \
+  && grep -qiE "run(s)? each \`check\`.{1,60}before implementation" "$tdd_red_skill" \
+  && grep -qiE 'record(s)? (its|the) failing output' "$tdd_red_skill"; then
+  pass tdd-red-runs-checks-red
+else
+  fail tdd-red-runs-checks-red "AC5: $tdd_red_skill Protocol to run each 'check' before implementation and record its failing output"
+fi
+
+if [ -f "$tdd_red_skill" ] \
+  && grep -qiE "stop.{1,80}check id.{1,20}missing from \`## Checks\`" "$tdd_red_skill" \
+  && grep -qiE 'stop.{1,80}(two entries share an id|share an id)' "$tdd_red_skill"; then
+  pass tdd-red-stops-on-bad-check-id
+else
+  fail tdd-red-stops-on-bad-check-id "AC6: $tdd_red_skill step 6 to stop when a criterion's check id is missing from '## Checks', and to stop when two '## Checks' entries share an id"
+fi
+
+if [ -f "$tdd_red_skill" ] \
+  && grep -qiE "reclassif(y|ying|ies|ied) a \`check\` (as|to) \`observe\`.{1,150}$rescope_pointer" "$tdd_red_skill"; then
+  pass rescope-covers-check-reclassification
+else
+  fail rescope-covers-check-reclassification "AC7: $tdd_red_skill to say reclassifying a 'check' as 'observe' stops the cycle by following Re-scope after approval in memento-4-human-review"
+fi
+
+if [ -f "$implementing_skill" ] \
+  && grep -qiE "check command.{1,40}frozen" "$implementing_skill" \
+  && grep -qiE '(same way it freezes test files|way it freezes test files|as it does test files)' "$implementing_skill" \
+  && grep -qiE 'verifier.{1,80}confirms? each check.{1,20}green' "$implementing_skill"; then
+  pass implementing-freezes-check-commands
+else
+  fail implementing-freezes-check-commands "AC8: $implementing_skill to freeze '## Checks' commands the same way it freezes test files, and its separate green-verifier to confirm each check now green"
+fi
+
+if [ -f "$implementing_skill" ] \
+  && grep -qiE '(memento-8c-work-summary.{1,80}verdict|verdict.{1,80}memento-8c-work-summary)' "$implementing_skill" \
+  && ! grep -qF 'push the feature branch so CI runs' "$implementing_skill"; then
+  pass implementing-defers-ci-to-8c
+else
+  fail implementing-defers-ci-to-8c "AC9: $implementing_skill to point at step 8c (memento-8c-work-summary) for the CI verdict, and to drop the claim that pushing the feature branch makes CI run at the recorded SHA"
 fi
 
 if [ "$fail_count" -eq 0 ]; then
