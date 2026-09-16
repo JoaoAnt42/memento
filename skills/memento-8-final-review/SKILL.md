@@ -18,7 +18,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
    - **CRAP** (**`model: sonnet`**) — Change Risk Anti-Patterns: high-complexity low-coverage functions
    - **Simplifier** (**`model: sonnet`**) — cuts, merges, premature abstraction, oversized new files
    - **Devil's Advocate** (**`model: sonnet`**) — assumption attacks, edge cases; flags any module, layer, or path in the diff that is **not in the plan's `## Data contract`** — flow the implementer introduced off-contract (no-op when the plan has no contract section)
-   - **Tests** (**`model: sonnet`**) — coverage gaps, weak assertions, flaky patterns; flags a criterion in the plan's `## Acceptance criteria` with no verifier, two tests verifying the same criterion, and a `smoke` criterion when the plan has no `## Human smoke: pass`
+   - **Tests** (**`model: sonnet`**) — coverage gaps, weak assertions, flaky patterns; flags a criterion in the plan's `## Acceptance criteria` with no verifier, two tests verifying the same criterion, a `smoke` criterion when the plan has no `## Human smoke: pass`, a criterion whose check id is missing from `## Checks`, a duplicated `## Checks` id, and a `## Checks` entry no criterion references
 2. Each returns a list of findings with severity.
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
@@ -39,6 +39,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 
    ## Acceptance criteria
    - [x] <criterion> — <verifier>
+   - [ ] <observe criterion> — not verified at merge; `<command>` → expect <expectation>
 
    <!-- or, when a ticket holds the criteria, instead: -->
    ## Verification
@@ -56,6 +57,8 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
    **`## Acceptance criteria`** goes in only when no ticket holds the criteria (`Source: none` or an epic), one line per criterion; each verifier names the test id or smoke check the Tests reviewer confirmed. It is exempt from the 4-bullet cap because the criteria are the spec. A task with no ticket gets no issue opened for it.
 
    **`## Verification`** replaces it when a ticket holds the criteria: one line per criterion, a 3–5 word handle and its verifier (test id or smoke check, as above), exempt from the cap; criterion text stays in the ticket. First read the current body of each ticket in `Source:`. A criterion gets a handle only when its own ticket's body has a checkbox or list item with the same wording, ignoring tick state, whitespace and markdown formatting; any other criterion is written in full, whatever `Posted:` says. A `[re-scoped]` line is always written in full, because re-scopes and moves go in comments and leave the old checkbox in the body. A criterion moved to another ticket isn't listed. Every line for a ticket body you can't read is written in full; name that ticket in your reply to the user. With several tickets, each line names its ticket.
+
+   **An `observe` criterion is not verified at merge** — its command only runs after the deploy. Its line goes in whichever criteria section `Source:` picked, `## Acceptance criteria` or `## Verification`, carrying the `observe` entry's command and its expectation from `## Checks` so the reader can run it once the deploy lands. It gets no section of its own: the plan is deleted on merge, so the body is the only place that command survives.
 
    **Do not write a transcript.** No per-finding accept/reject lists, no Bugs #N / Simplifier #N enumeration, no rationale tree, and no `## Overview` restating the sections under it. The diff plus these sections are the record.
 
