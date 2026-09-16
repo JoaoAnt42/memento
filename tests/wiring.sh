@@ -276,6 +276,44 @@ else
   fail planning-lists-criteria "AC2/AC3: skills/memento-2-planning/SKILL.md plan template to add a '## Acceptance criteria' heading with [ticket]/[drafted]/[re-scoped: <why>, r<n>] tags (r1, then +1 on each re-scope, no date) and a 'Posted: <date> <ticket> body (AC4, AC5); <date> <ticket> comment (AC3 r2)' line, drafting to reference the write-ticket skill's unhappy-path rule, any smoke verifier to force needs_human_smoke: true, and the ownership rule (a test belongs to the task whose change makes it pass, the later one in task order; a task with neither a criterion test nor a seam test is merged into a neighbour at planning)"
 fi
 
+if [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qE '^## Checks' skills/memento-2-planning/SKILL.md \
+  && grep -qF -e '- <id> [repo: <label>] — `<command>` → expect <expectation>' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(C1, C2.{0,20}unique per plan|unique per plan.{0,20}C1, C2)' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(\[repo: <label>\].{0,40}multi-repo|multi-repo.{0,40}\[repo: <label>\])' skills/memento-2-planning/SKILL.md; then
+  pass planning-checks-block
+else
+  fail planning-checks-block "AC1: skills/memento-2-planning/SKILL.md plan template to add a '## Checks' heading whose entries follow '- <id> [repo: <label>] -- <command> -> expect <expectation>' (id, optional repo tag, command, expected output), ids C1, C2, ... unique per plan, and the repo tag required only on multi-repo plans"
+fi
+
+if [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qF '→ check C1 (T2)' skills/memento-2-planning/SKILL.md \
+  && grep -qF '→ observe C3 (T4)' skills/memento-2-planning/SKILL.md \
+  && grep -qE '`<verifier>` is `test`.*`check <id>`.*`observe <id>`.*`smoke`' skills/memento-2-planning/SKILL.md; then
+  pass planning-criterion-references-check-id
+else
+  fail planning-criterion-references-check-id "AC2: skills/memento-2-planning/SKILL.md to show a criterion line referencing a Checks entry by id (examples '-> check C1 (T2)' and '-> observe C3 (T4)') and the verifier rule to name all four kinds in order -- test, check <id>, observe <id>, smoke"
+fi
+
+if [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qiE '(exact string or regex match against the command.s output|command.s output.*exact string or regex match)' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(never from a figure quoted in a ticket or plan|figure quoted in a ticket or plan.*never)' skills/memento-2-planning/SKILL.md; then
+  pass planning-expectation-is-matched
+else
+  fail planning-expectation-is-matched "AC3: skills/memento-2-planning/SKILL.md to define a Checks expectation as an exact string or regex match against the command's output, sourced from actually running the command and never from a figure quoted in a ticket or plan"
+fi
+
+if [ -f skills/memento-2-planning/SKILL.md ] \
+  && grep -qiE 'runs in the worktree before implementation' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'determinist' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'without credentials the agent lacks' skills/memento-2-planning/SKILL.md \
+  && grep -qiE 'without side effects on shared infrastructure' skills/memento-2-planning/SKILL.md \
+  && grep -qiE '(everything else is .observe.|otherwise.*.observe.)' skills/memento-2-planning/SKILL.md; then
+  pass planning-check-versus-observe
+else
+  fail planning-check-versus-observe "AC4: skills/memento-2-planning/SKILL.md to gate 'check' on the command running in the worktree before implementation, deterministically, without credentials the agent lacks and without side effects on shared infrastructure, with everything else defaulting to 'observe'"
+fi
+
 if [ -f skills/memento-3-auto-review/SKILL.md ] \
   && grep -qE 'Devil.s Advocate.*\. Flags `## Acceptance criteria` missing a real unhappy path' skills/memento-3-auto-review/SKILL.md; then
   pass auto-review-flags-missing-unhappy-path
