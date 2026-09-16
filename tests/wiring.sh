@@ -557,6 +557,15 @@ else
   fail status-in-review-after-ci-verdict "AC14: $summary_skill to set status: in-review after step 8c's CI verdict, with the PR-open step in $final_review_skill no longer setting it there and the Small route in skills/memento-0-using/SKILL.md no longer setting it at PR-open either"
 fi
 
+if [ -f skills/memento-0-using/SKILL.md ] \
+  && printf '%s' "$using_small_route_section" | grep -qiE '(check.{1,40}observe|observe.{1,40}check).{1,80}(keeps?|stays?).{1,15}(the task )?Small' \
+  && printf '%s' "$using_small_route_section" | grep -qiE 'neither.{1,60}sets?.{1,20}needs_human_smoke: true' \
+  && printf '%s' "$using_small_route_section" | grep -qiE 'check.{1,80}records? (its |the )?red.{1,20}(and|then) green.{1,20}output.{1,30}(in|to) the plan'; then
+  pass small-route-check-and-observe
+else
+  fail small-route-check-and-observe "AC15: skills/memento-0-using/SKILL.md Small route to state that check and observe criteria keep the task Small and that neither sets needs_human_smoke: true (only a smoke-only criterion still forces Large), and that a Small-route check records its red and green output in the plan"
+fi
+
 if [ "$fail_count" -eq 0 ]; then
   exit 0
 else
