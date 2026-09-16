@@ -15,10 +15,34 @@ Write what a teammate reads in Slack to know what landed and that it needs their
 
 1. **The PRs** — from step 8 (or 8b) when it handed them over, otherwise `gh pr view --json number,url,title,body,closingIssuesReferences` in each repo's worktree. Never guess a PR number from a branch name.
 2. **The issue** — the PR's linked reference, or `Closes #N` / `Fixes #N` / `Refs #N` in its body; full URL via `gh issue view <n> --json url`. **A missing issue link is not a blocker.** Emit the summary with the PR URL alone and note in one line that no issue is linked. Never stop to ask which issue to use and never invent one — a delegated session (step 0d) has nobody to answer, and the summary is worth more than the link.
-3. **The state** — `gh pr view <n> --json state,isDraft,reviewDecision,statusCheckRollup`, **before** emitting anything. Failing checks or a draft PR: do not emit the block at all. Say which PR is not ready and why; emit once it is green. Asking for review on red CI wastes the reviewer's time, and a summary already in the transcript cannot be recalled.
+3. **The state** — `gh pr view <n> --json state,isDraft,reviewDecision,statusCheckRollup`, **before** emitting anything. Failing checks or a draft PR: do not emit the block at all. Say which PR is not ready and why; emit once it is green. Asking for review on red CI wastes the reviewer's time, and a summary already in the transcript cannot be recalled. Checks still running, or no run at all — **The CI verdict** below.
 
 4. **The board note** — write the one-liner to the routed Obsidian board (below), **before** emitting.
    It runs only once the state check in 3 has passed, so a draft or red-CI PR never reaches a board.
+
+## The CI verdict
+
+CI starts when the PR does — most target repos trigger on `pull_request` and on pushes to the base
+branch, so the branch push at step 7 started nothing. The run is read here, and nowhere later.
+
+**Name the source first.** GitHub repos: `gh`, the `statusCheckRollup` above. Azure DevOps repos —
+`km-searcher`, `km-searcher-ui`, `XPenses_UI` — keep their PRs in Azure Repos, where `gh` returns
+nothing; read the PR's build through `az`, the Azure CLI, in that repo's worktree. A repo with no
+workflows: say this repo has no CI and stop there — step 7's local green is the whole verdict. `gh`
+coming back empty in an Azure repo is not a pass.
+
+**Wait up to 10 minutes** for pending checks, re-reading the state every 30s. An **absent run** is
+unverified rather than green: a PR with conflicts produces zero runs, and zero runs means nothing ran.
+Wait on it like a pending one.
+
+On timeout, do not emit the block. Name the PR, say its checks are still pending, and print the
+command to re-run the read — `gh pr view <n> --json state,isDraft,statusCheckRollup` in that worktree,
+`az` in an Azure one. That re-run is how the verdict lands; nothing else in the cycle comes back to a
+run left pending.
+
+This step records the verdict in the plan — which source was read, and what it said.
+Once the verdict is green, set `status: in-review` on the plan; while checks are pending the
+plan stays where step 7 left it.
 
 ## The board note
 

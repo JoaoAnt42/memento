@@ -23,7 +23,7 @@ Five reviewers in parallel. Orchestrator reconciles. Precedence when they confli
 3. **Orchestrator** applies precedence, deduplicates overlapping findings, and decides what to apply / reject / defer.
 4. Reuse step-3 discussion pattern if reviewers disagree sharply (round cap: 3).
 5. Present consolidated review to the user. For non-trivial changes, **pause for user confirmation before applying**.
-6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). Set `status: in-review`. When the task came from an issue, link it (`Closes #N` in the body; `Refs #N` when `Source:` is an epic, never `Closes #N`) — step 8.6's summary carries that link, and nothing else in the cycle creates it.
+6. Once changes are applied and re-verified green, open one PR per repo in `repos:` (each `branch` → its `base`). The plan moves to `status: in-review` at step 8.6, after the CI verdict, not here. When the task came from an issue, link it (`Closes #N` in the body; `Refs #N` when `Source:` is an epic, never `Closes #N`) — step 8.6's summary carries that link, and nothing else in the cycle creates it.
 7. **Write the decision record into the PR body — not into the plan.** Three sections, in this order, then one criteria section picked by `Source:`:
 
    ```markdown
